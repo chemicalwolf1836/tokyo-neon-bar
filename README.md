@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Tokyo Neon Bar (Demo)
 
 Cyberpunk-style bilingual (EN/JP) demo website for a Tokyo bar targeting foreign visitors.
@@ -17,3 +18,6 @@ Then open http://localhost:3000
 - Replace address + map embed
 - Connect the reservation form to email (Resend) or a booking tool
 - Add real photos (hero + gallery)
+=======
+# tokyo-neon-bar
+>>>>>>> da486c74ef874535756f1f8a31a592404c3271e8
