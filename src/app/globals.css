@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 10 10 14;         /* near-black */
+  --panel: 16 16 22;      /* dark panel */
+  --text: 236 236 245;    /* off-white */
+  --muted: 160 160 178;   /* gray */
+  --neonA: 0 229 255;     /* cyan */
+  --neonB: 255 0 153;     /* magenta */
+  --neonC: 163 102 255;   /* violet */
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(
+      1200px 800px at 20% 10%,
+      rgba(0, 229, 255, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      1000px 700px at 80% 20%,
+      rgba(255, 0, 153, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 700px at 50% 90%,
+      rgba(163, 102, 255, 0.10),
+      transparent 60%
+    ),
+    rgb(var(--bg));
+  color: rgb(var(--text));
+}
+
+.neon-ring {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 0 18px rgba(0, 229, 255, 0.18),
+    0 0 28px rgba(255, 0, 153, 0.12);
+}
+
+.neon-text {
+  text-shadow:
+    0 0 10px rgba(0, 229, 255, 0.25),
+    0 0 18px rgba(255, 0, 153, 0.16);
+}
+
+.grid-scan {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at 50% 20%, black 0%, transparent 60%);
+  opacity: 0.25;
+}
+
+.glow-border {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.10),
+    0 0 22px rgba(163, 102, 255, 0.10);
+}
