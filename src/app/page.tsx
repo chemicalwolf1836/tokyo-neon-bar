@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -74,6 +74,21 @@ const copy = {
         "Reservation funnel + Maps + Instagram — the conversion trifecta.",
       ],
     },
+    atmosphere: {
+    title: "Atmosphere",
+    subtitle: "A quick look at the vibe before you book.",
+   },
+   info: {
+   title: "Tourist Info",
+   subtitle: "Clear rules and details reduce hesitation and increase bookings.",
+   items: [
+    { label: "Cover", value: "No cover charge (example) / Seat charge may apply" },
+    { label: "Payment", value: "Cash + card accepted (example)" },
+    { label: "Smoking", value: "Smoking policy varies (example)" },
+    { label: "Last Entry", value: "Last entry 02:00 (example)" },
+    { label: "Language", value: "English-friendly staff (example)" },
+  ],
+},
     footer: "Demo site • Built with Next.js + Tailwind + Framer Motion",
   },
   jp: {
@@ -134,6 +149,21 @@ const copy = {
         "予約導線＋地図＋Instagramで集客に強い。",
       ],
     },
+    atmosphere: {
+    title: "雰囲気",
+    subtitle: "予約前にお店の空気感をチェック。",
+    },
+   info: {
+   title: "ご案内",
+   subtitle: "ルールや詳細が分かると、予約につながりやすくなります。",
+   items: [
+     { label: "チャージ", value: "チャージなし（例）/ 席料がかかる場合あり" },
+     { label: "支払い", value: "現金・カード可（例）" },
+     { label: "喫煙", value: "喫煙ルールは店舗による（例）" },
+     { label: "最終入店", value: "最終入店 02:00（例）" },
+     { label: "言語", value: "英語対応可（例）" },
+   ],
+   },
     footer: "デモサイト • Next.js + Tailwind + Framer Motion",
   },
 } as const;
@@ -177,6 +207,7 @@ function Section({
 
 export default function Page() {
   const [lang, setLang] = useState<Lang>("en");
+  const [submitted, setSubmitted] = useState(false);
   const t = useMemo(() => copy[lang], [lang]);
 
   return (
@@ -302,14 +333,57 @@ export default function Page() {
         <p className="mt-5 text-sm text-white/60">{t.menu.note}</p>
       </Section>
 
+      {/* ATMOSPHERE */}
+<Section id="atmosphere" title={t.atmosphere.title} subtitle={t.atmosphere.subtitle}>
+  <div className="grid md:grid-cols-2 gap-6">
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5 }}
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5"
+    >
+      <div className="relative aspect-[16/10]">
+        <Image
+          src="/images/gallery-1.jpg"
+          alt="Neon skyline vibe"
+          fill
+          className="object-cover transition duration-500 hover:scale-105"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+      </div>
+    </motion.div>
+
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5, delay: 0.05 }}
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5"
+    >
+      <div className="relative aspect-[16/10]">
+        <Image
+          src="/images/gallery-2*.jpg"
+          alt="Tokyo neon architecture"
+          fill
+          className="object-cover transition duration-500 hover:scale-105"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+      </div>
+    </motion.div>
+  </div>
+</Section>
+
       <Section id="reserve" title={t.reserve.title} subtitle={t.reserve.subtitle}>
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5">
             <form
               onSubmit={(e) => {
-                e.preventDefault();
-                alert("Demo: Form submitted (not connected). Next step: email/booking integration.");
-              }}
+              e.preventDefault();
+              setSubmitted(true);
+             }}
               className="space-y-3"
             >
               <div className="grid sm:grid-cols-2 gap-3">
@@ -375,7 +449,16 @@ export default function Page() {
                 {t.reserve.button}
               </button>
 
-              <p className="text-xs text-white/55">{t.reserve.hint}</p>
+              {submitted ? (
+               <div className="mt-2 rounded-xl border border-white/15 bg-white/10 p-3 text-sm text-white/85">
+                ✅ Request received. We’ll reply by email shortly.
+               <div className="mt-1 text-xs text-white/60">
+                 (Demo mode — next step: connect this to the bar’s email.)
+                 </div>
+                </div>
+               ) : (
+                 <p className="text-xs text-white/55">{t.reserve.hint}</p>
+               )}
             </form>
           </div>
 
