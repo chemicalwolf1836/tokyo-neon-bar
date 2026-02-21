@@ -28,6 +28,11 @@ const copy = {
       badges: ["EN/JP Friendly", "No Cover Charge*", "Late Night"],
       fineprint: "*Example text for demo purposes.",
     },
+    trust: {
+       rating: "4.9 / 5",
+       reviews: "120+ reviews",
+       badges: ["English Friendly", "Tourist Approved", "Cashless OK", "Late Night"],
+       },
     menu: {
       title: "Signature Menu",
       subtitle: "Simple, readable, and mobile-first. Perfect for tourists.",
@@ -88,6 +93,16 @@ const copy = {
     { label: "Last Entry", value: "Last entry 02:00 (example)" },
     { label: "Language", value: "English-friendly staff (example)" },
   ],
+   trust: {
+   rating: "4.9 / 5",
+   reviews: "120+ reviews",
+   badges: [
+    "English Friendly",
+    "Tourist Approved",
+    "Cashless OK",
+    "Late Night",
+   ],
+ },
 },
     footer: "Demo site • Built with Next.js + Tailwind + Framer Motion",
   },
@@ -103,6 +118,11 @@ const copy = {
       ctaSecondary: "メニューを見る",
       badges: ["EN/JP対応", "チャージなし*", "深夜営業"],
       fineprint: "*デモ用の表記です。",
+ },
+     trust: {
+      rating: "4.9 / 5",
+      reviews: "レビュー 120件以上",
+      badges: ["英語対応", "外国人歓迎", "キャッシュレス可", "深夜営業"],
     },
     menu: {
       title: "シグネチャーメニュー",
@@ -163,7 +183,18 @@ const copy = {
      { label: "最終入店", value: "最終入店 02:00（例）" },
      { label: "言語", value: "英語対応可（例）" },
    ],
+    trust: {
+    rating: "4.9 / 5",
+    reviews: "レビュー 120件以上",
+    badges: [
+     "英語対応",
+     "外国人歓迎",
+     "キャッシュレス可",
+     "深夜営業",
+   ],
    },
+   },
+
     footer: "デモサイト • Next.js + Tailwind + Framer Motion",
   },
 } as const;
@@ -305,6 +336,37 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      {/* TRUST STRIP */}
+    <section className="border-y border-white/10 bg-white/5 backdrop-blur-sm">
+      <div className="max-w-6xl mx-auto px-6 py-8 text-center">
+
+       <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+
+      {/* Rating */}
+      <div className="flex items-center gap-3">
+        <div className="text-yellow-400 text-xl">★★★★★</div>
+        <div>
+          <div className="font-semibold text-white">{t.trust.rating}</div>
+          <div className="text-xs text-white/60">{t.trust.reviews}</div>
+        </div>
+      </div>
+
+      {/* Badges */}
+      <div className="flex flex-wrap justify-center gap-3">
+        {t.trust.badges.map((badge: string) => (
+          <span
+            key={badge}
+            className="px-4 py-1 text-xs rounded-full bg-white/10 border border-white/20 text-white/80"
+          >
+            {badge}
+          </span>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
 
       <Section id="menu" title={t.menu.title} subtitle={t.menu.subtitle}>
         <div className="grid md:grid-cols-2 gap-4">
@@ -476,6 +538,25 @@ export default function Page() {
           </div>
         </div>
       </Section>
+
+      {/* TOURIST INFO */}
+ <Section id="info" title={t.info.title} subtitle={t.info.subtitle}>
+   <div className="grid md:grid-cols-2 gap-4">
+     {t.info.items.map((it: { label: string; value: string }) => (
+       <div
+         key={it.label}
+         className="glow-border neon-ring rounded-2xl p-5 bg-white/5"
+      >
+         <p className="text-sm text-white/80">{it.label}</p>
+         <p className="mt-1 text-sm text-[rgb(var(--muted))]">{it.value}</p>
+       </div>
+     ))}
+  </div>
+
+  <p className="mt-5 text-xs text-white/55">
+    Tip: For real clients, we’ll confirm their exact rules (cover, smoking, payment, last entry).
+  </p>
+</Section>
 
       <Section id="access" title={t.access.title} subtitle={t.access.subtitle}>
         <div className="grid lg:grid-cols-2 gap-6">
