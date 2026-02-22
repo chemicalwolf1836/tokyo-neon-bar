@@ -240,6 +240,55 @@ export default function Page() {
   const [lang, setLang] = useState<Lang>("en");
   const [submitted, setSubmitted] = useState(false);
   const t = useMemo(() => copy[lang], [lang]);
+  const [reserveStatus, setReserveStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [reserveError, setReserveError] = useState<string>("");
+
+
+async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  setReserveStatus("loading");
+  setReserveError("");
+
+  const form = e.currentTarget;
+  const formData = new FormData(form);
+
+  const payload = {
+    name: String(formData.get("name") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    date: String(formData.get("date") ?? ""),
+    time: String(formData.get("time") ?? ""),
+    guests: String(formData.get("guests") ?? ""),
+    message: String(formData.get("message") ?? ""),
+  };
+
+  if (!payload.name || !payload.email || !payload.date || !payload.time || !payload.guests) {
+    setReserveStatus("error");
+    setReserveError("Please fill in all required fields.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/reserve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      setReserveStatus("error");
+      setReserveError(data?.error ?? "Something went wrong.");
+      return;
+    }
+
+    setReserveStatus("success");
+    form.reset();
+  } catch {
+    setReserveStatus("error");
+    setReserveError("Network error. Please try again.");
+  }
+}
 
   return (
     <main className="min-h-screen">
@@ -442,16 +491,14 @@ export default function Page() {
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5">
             <form
-              onSubmit={(e) => {
-              e.preventDefault();
-              setSubmitted(true);
-             }}
-              className="space-y-3"
-            >
+             onSubmit={handleReserveSubmit}
+             className="space-y-3"
+             >
               <div className="grid sm:grid-cols-2 gap-3">
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.name}</span>
                   <input
+                    name="name"
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
@@ -459,6 +506,7 @@ export default function Page() {
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.email}</span>
                   <input
+                    name="email"
                     type="email"
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
@@ -470,6 +518,7 @@ export default function Page() {
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.date}</span>
                   <input
+                    name="date"
                     type="date"
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
@@ -478,6 +527,7 @@ export default function Page() {
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.time}</span>
                   <input
+                    name="time"
                     type="time"
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
@@ -486,6 +536,7 @@ export default function Page() {
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.guests}</span>
                   <input
+                    name="guests"
                     type="number"
                     min={1}
                     max={12}
@@ -500,27 +551,39 @@ export default function Page() {
                 <span className="text-white/80">{t.reserve.fields.message}</span>
                 <textarea
                   rows={4}
+                  name="message"
                   className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                 />
               </label>
 
               <button
-                type="submit"
-                className="w-full neon-ring rounded-2xl px-5 py-3 text-sm font-medium bg-white/5 hover:bg-white/10 transition"
-              >
-                {t.reserve.button}
-              </button>
+               type="submit"
+               disabled={reserveStatus === "loading"}
+               className={`neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition ${reserveStatus === "loading" ? "opacity-50 cursor-not-allowed" : "hover:text-white"}`}
+               >
+               {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
+               </button>
 
-              {submitted ? (
-               <div className="mt-2 rounded-xl border border-white/15 bg-white/10 p-3 text-sm text-white/85">
-                ✅ Request received. We’ll reply by email shortly.
-               <div className="mt-1 text-xs text-white/60">
-                 (Demo mode — next step: connect this to the bar’s email.)
-                 </div>
-                </div>
-               ) : (
-                 <p className="text-xs text-white/55">{t.reserve.hint}</p>
+              {reserveStatus === "idle" && (
+               <p className="text-xs text-white/55">{t.reserve.hint}</p>
                )}
+
+              {reserveStatus === "loading" && (
+               <p className="text-sm text-white/60">Sending reservation...</p>
+               )}
+
+               {reserveStatus === "success" && (
+               <p className="text-sm text-green-400">
+               ✅ Request sent. We’ll contact you shortly.
+              </p>
+              )}
+
+              {reserveStatus === "error" && (
+              <p className="text-sm text-red-400">
+               ❌ {reserveError || "Something went wrong."}
+              </p>
+               )}
+
             </form>
           </div>
 
