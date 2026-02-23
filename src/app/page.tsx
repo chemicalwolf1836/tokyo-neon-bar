@@ -21,8 +21,8 @@ const copy = {
     hero: {
       kicker: "Tokyo Nightlife • Shinjuku",
       title: "A Cyber-Modern Cocktail Hideout",
-      subtitle:
-        "Tourist-friendly, bilingual, and designed for the neon nights. Walk-ins welcome — reservations recommended.",
+      subtitleLine1: "Tourist-friendly, bilingual, and designed for the neon nights.",
+      subtitleLine2: "Walk-ins welcome — reservations recommended.",
       ctaPrimary: "Reserve a Seat",
       ctaSecondary: "View Menu",
       badges: ["EN/JP Friendly", "No Cover Charge*", "Late Night"],
@@ -112,8 +112,8 @@ const copy = {
     hero: {
       kicker: "東京ナイトライフ • 新宿",
       title: "サイバー・モダンなカクテルバー",
-      subtitle:
-        "訪日外国人向けに見やすい二言語サイト。ウォークイン歓迎、予約推奨。",
+      subtitleLine1:"訪日外国人向けに見やすい二言語サイト。",
+      subtitleLine2:"ウォークイン歓迎、予約推奨。 ",
       ctaPrimary: "予約する",
       ctaSecondary: "メニューを見る",
       badges: ["EN/JP対応", "チャージなし*", "深夜営業"],
@@ -382,7 +382,13 @@ if (Object.keys(nextErrors).length > 0) {
               transition={{ duration: 0.55, delay: 0.1 }}
               className="mt-4 text-sm md:text-base text-[rgb(var(--muted))] max-w-2xl"
             >
-              {t.hero.subtitle}
+              <>
+             {t.hero.subtitleLine1}
+             <br />
+             <span className="text-white/60">
+             {t.hero.subtitleLine2}
+             </span>
+</>
             </motion.p>
 
             <motion.div
@@ -461,7 +467,7 @@ if (Object.keys(nextErrors).length > 0) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5 }}
-              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring"
+              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01]"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -487,7 +493,7 @@ if (Object.keys(nextErrors).length > 0) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
-      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5"
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
     >
       <div className="relative aspect-[16/10]">
         <Image
@@ -506,7 +512,7 @@ if (Object.keys(nextErrors).length > 0) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5, delay: 0.05 }}
-      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5"
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
     >
       <div className="relative aspect-[16/10]">
         <Image
@@ -529,6 +535,10 @@ if (Object.keys(nextErrors).length > 0) {
              onSubmit={handleReserveSubmit}
              className="space-y-3"
              >
+              <fieldset
+              disabled={reserveStatus === "loading"}
+              className="space-y-3 disabled:opacity-80 disabled:cursor-not-allowed"
+              >
               <div className="grid sm:grid-cols-2 gap-3">
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.name}</span>
@@ -607,43 +617,44 @@ if (Object.keys(nextErrors).length > 0) {
               </label>
 
               <button
-               type="submit"
-               disabled={reserveStatus === "loading"}
-               className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2">
-               {reserveStatus === "loading" && <Spinner />}
-               {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
-               </button>
+              type="submit"
+              disabled={reserveStatus === "loading"}
+              className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+              >
+             {reserveStatus === "loading" && <Spinner />}
+             {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
+             </button>
+             </fieldset>
 
-              {reserveStatus === "idle" && (
-               <p className="text-xs text-white/55">{t.reserve.hint}</p>
-               )}
+            {/* Status messages can stay OUTSIDE fieldset so they still render */}
+            {reserveStatus === "idle" && (
+            <p className="text-xs text-white/55">{t.reserve.hint}</p>
+            )}
 
-              {reserveStatus === "loading" && (
-               <p className="text-sm text-white/60">Sending reservation...</p>
-               )}
+           {reserveStatus === "success" && (
+           <div className="animate-[fadeIn_250ms_ease-out]">
+           <StatusBanner variant="success">
+             <span className="shrink-0">✅</span>
+             <span className="animate-[pulseGlow_900ms_ease-in-out_1]">
+              Request sent. We’ll contact you shortly.
+             </span>
+          </StatusBanner>
+         </div>
+         )}
 
-               {reserveStatus === "success" && (
-               <div className="animate-[fadeIn_250ms_ease-out]">
-               <StatusBanner variant="success">
-                 <span>✅</span>
-                 <span>Request sent. We’ll contact you shortly.</span>
-               </StatusBanner>
-               </div>
-               )}
-
-               {reserveStatus === "error" && (
-               <div className="animate-[fadeIn_250ms_ease-out]">
-               <StatusBanner variant="error">
-                 <span>❌</span>
-                 <span>{reserveError || "Something went wrong."}</span>
-               </StatusBanner>
-               </div>
-               )}
+         {reserveStatus === "error" && (
+          <div className="animate-[fadeIn_250ms_ease-out]">
+           <StatusBanner variant="error">
+             <span className="shrink-0">❌</span>
+             <span>{reserveError || "Something went wrong."}</span>
+           </StatusBanner>
+           </div>
+           )}
 
             </form>
           </div>
 
-          <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5">
+          <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
             <p className="text-sm text-white/80 font-medium">Why this sells</p>
             <ul className="mt-3 space-y-2 text-sm text-[rgb(var(--muted))]">
               <li>• Tourists understand the menu (EN/JP toggle).</li>
@@ -664,7 +675,7 @@ if (Object.keys(nextErrors).length > 0) {
      {t.info.items.map((it: { label: string; value: string }) => (
        <div
          key={it.label}
-         className="glow-border neon-ring rounded-2xl p-5 bg-white/5"
+         className="glow-border neon-ring rounded-2xl p-5 bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
       >
          <p className="text-sm text-white/80">{it.label}</p>
          <p className="mt-1 text-sm text-[rgb(var(--muted))]">{it.value}</p>
@@ -679,7 +690,7 @@ if (Object.keys(nextErrors).length > 0) {
 
       <Section id="access" title={t.access.title} subtitle={t.access.subtitle}>
         <div className="grid lg:grid-cols-2 gap-6">
-          <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5 space-y-3">
+          <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5 space-y-3 transition-transform duration-300 hover:scale-[1.01]">
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
@@ -723,7 +734,7 @@ if (Object.keys(nextErrors).length > 0) {
             <p className="text-xs text-white/55">{t.access.mapNote}</p>
           </div>
 
-          <div className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5">
+          <div className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
             <iframe
               title="Map"
               className="w-full h-[320px] md:h-[380px]"
@@ -744,19 +755,18 @@ if (Object.keys(nextErrors).length > 0) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5 }}
-              className="glow-border neon-ring rounded-2xl p-5 bg-white/5"
+              className="glow-border neon-ring rounded-2xl p-5 bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
             >
               <p className="text-sm text-[rgb(var(--muted))]">{p}</p>
             </motion.div>
           ))}
         </div>
       </Section>
-
-      <footer className="py-10">
-        <div className="mx-auto max-w-6xl px-4 text-xs text-white/45">
-          {t.footer}
-        </div>
-      </footer>
+      <footer className="border-t border-white/10 mt-16 py-8 text-center">
+       <p className="text-sm text-white/50">
+         © {new Date().getFullYear()} NEON KISSA • Built with Next.js + Tailwind
+       </p>
+       </footer>
     </main>
   );
 }
