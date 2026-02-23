@@ -236,16 +236,43 @@ function Section({
   );
 }
 
+function Spinner() {
+  return (
+    <span
+      className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white/80"
+      aria-label="Loading"
+    />
+  );
+}
+
+function StatusBanner({
+  variant,
+  children,
+}: {
+  variant: "success" | "error";
+  children: React.ReactNode;
+}) {
+  const base =
+    "mt-3 rounded-xl border px-3 py-2 text-sm flex items-start gap-2";
+  const styles =
+    variant === "success"
+      ? "border-green-400/25 bg-green-500/10 text-green-200"
+      : "border-red-400/25 bg-red-500/10 text-red-200";
+
+  return <div className={`${base} ${styles}`}>{children}</div>;
+}
+
 export default function Page() {
   const [lang, setLang] = useState<Lang>("en");
   const [submitted, setSubmitted] = useState(false);
   const t = useMemo(() => copy[lang], [lang]);
   const [reserveStatus, setReserveStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [reserveError, setReserveError] = useState<string>("");
-
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
 async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
+  setFieldErrors({});
   setReserveStatus("loading");
   setReserveError("");
 
@@ -261,11 +288,19 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
     message: String(formData.get("message") ?? ""),
   };
 
-  if (!payload.name || !payload.email || !payload.date || !payload.time || !payload.guests) {
-    setReserveStatus("error");
-    setReserveError("Please fill in all required fields.");
-    return;
-  }
+  const nextErrors: Record<string, string> = {};
+if (!payload.name) nextErrors.name = "Name is required.";
+if (!payload.email) nextErrors.email = "Email is required.";
+if (!payload.date) nextErrors.date = "Date is required.";
+if (!payload.time) nextErrors.time = "Time is required.";
+if (!payload.guests) nextErrors.guests = "Guests is required.";
+
+if (Object.keys(nextErrors).length > 0) {
+  setFieldErrors(nextErrors);
+  setReserveStatus("error");
+  setReserveError("Please fix the highlighted fields.");
+  return;
+}
 
   try {
     const res = await fetch("/api/reserve", {
@@ -502,6 +537,9 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
+                  {fieldErrors.name && (
+                   <p className="mt-1 text-xs text-red-300">{fieldErrors.name}</p>
+                   )}
                 </label>
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.email}</span>
@@ -511,6 +549,9 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
+                  {fieldErrors.email && (
+                  <p className="mt-1 text-xs text-red-300">{fieldErrors.email}</p>
+                   )}
                 </label>
               </div>
 
@@ -523,6 +564,9 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
+                  {fieldErrors.date && (
+                   <p className="mt-1 text-xs text-red-300">{fieldErrors.date}</p>
+                   )}
                 </label>
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.time}</span>
@@ -532,6 +576,9 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
+                  {fieldErrors.time && (
+                   <p className="mt-1 text-xs text-red-300">{fieldErrors.time}</p>
+                   )}
                 </label>
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.guests}</span>
@@ -544,6 +591,9 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
+                  {fieldErrors.guests && (
+                   <p className="mt-1 text-xs text-red-300">{fieldErrors.guests}</p>
+                   )}
                 </label>
               </div>
 
@@ -559,8 +609,8 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
               <button
                type="submit"
                disabled={reserveStatus === "loading"}
-               className={`neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition ${reserveStatus === "loading" ? "opacity-50 cursor-not-allowed" : "hover:text-white"}`}
-               >
+               className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2">
+               {reserveStatus === "loading" && <Spinner />}
                {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
                </button>
 
@@ -573,15 +623,21 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
                )}
 
                {reserveStatus === "success" && (
-               <p className="text-sm text-green-400">
-               ✅ Request sent. We’ll contact you shortly.
-              </p>
-              )}
+               <div className="animate-[fadeIn_250ms_ease-out]">
+               <StatusBanner variant="success">
+                 <span>✅</span>
+                 <span>Request sent. We’ll contact you shortly.</span>
+               </StatusBanner>
+               </div>
+               )}
 
-              {reserveStatus === "error" && (
-              <p className="text-sm text-red-400">
-               ❌ {reserveError || "Something went wrong."}
-              </p>
+               {reserveStatus === "error" && (
+               <div className="animate-[fadeIn_250ms_ease-out]">
+               <StatusBanner variant="error">
+                 <span>❌</span>
+                 <span>{reserveError || "Something went wrong."}</span>
+               </StatusBanner>
+               </div>
                )}
 
             </form>
