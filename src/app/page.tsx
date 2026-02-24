@@ -734,15 +734,35 @@ if (Object.keys(nextErrors).length > 0) {
             <p className="text-xs text-white/55">{t.access.mapNote}</p>
           </div>
 
-          <div className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
-            <iframe
-              title="Map"
-              className="w-full h-[320px] md:h-[380px]"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=139.6917%2C35.6895%2C139.7117%2C35.6995&layer=mapnik"
-            />
-          </div>
+          {/* MAP */}
+<div className="glow-border rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
+  <div className="aspect-[16/10] w-full">
+    <iframe
+      title="Google Map"
+      src= "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25920.009904762024!2d139.6885976981374!3d35.701587145136834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188d2059b7fd4b%3A0xec61c68fe232efd2!2sShinjuku%20City%2C%20Tokyo!5e0!3m2!1sen!2sjp!4v1771945764616!5m2!1sen!2sjp" 
+      className="w-full h-full"
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      allowFullScreen
+    />
+  </div>
+
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border-t border-white/10">
+    <div className="text-sm text-white/70">
+      {/* Replace text later with your real address details */}
+      Shinjuku Station • 4 min walk
+    </div>
+
+    <a
+      href= "https://www.google.com/maps/place/Shinjuku+City,+Tokyo/@35.7015871,139.6885977,15z/data=!3m1!4b1!4m5!3m4!1s0x60188d2059b7fd4b:0xec61c68fe232efd2!8m2!3d35.6938401!4d139.7035494?hl=en"
+      target="_blank"
+      rel="noreferrer"
+      className="neon-ring rounded-full px-4 py-2 text-xs text-white/85 hover:text-white transition w-fit"
+    >
+      Open in Google Maps →
+    </a>
+  </div>
+</div>
         </div>
       </Section>
 
