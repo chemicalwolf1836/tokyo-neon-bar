@@ -5,18 +5,60 @@ export const runtime = "nodejs"; // important: Resend needs Node runtime
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function escapeHtml(s: string) {
-  return s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+// Simple in-memory store for rate limiting (IP → { count, timestamp })
+const ipStore = new Map<string, { count: number; timestamp: number }>();
+const RATE_LIMIT = 5; // max requests
+const WINDOW_MS = 60 * 1000; // per minute
+
+// Basic HTML escaping to prevent injection in emails
+function escapeHtml(str: string) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 export async function POST(req: Request) {
   try {
+
+    // Rate Limiting
+    // ----------------------------
+   const forwardedFor = req.headers.get("x-forwarded-for");
+    const realIp = req.headers.get("x-real-ip");
+    const cfConnectingIp = req.headers.get("cf-connecting-ip");
+    const ip =
+    cfConnectingIp ||
+    realIp ||
+    forwardedFor?.split(",")[0]?.trim() ||
+    "unknown";
+
+    console.log("RATE_LIMIT ip =", ip);
+
+    const now = Date.now();
+    const record = ipStore.get(ip);
+
+    if (record) {
+      if (now - record.timestamp < WINDOW_MS) {
+        if (record.count >= RATE_LIMIT) {
+          return NextResponse.json(
+            { ok: false, error: "Too many requests. Please try again later." },
+            { status: 429 }
+          );
+        }
+        record.count += 1;
+        ipStore.set(ip, record);
+      } else {
+        ipStore.set(ip, { count: 1, timestamp: now });
+      }
+    } else {
+      ipStore.set(ip, { count: 1, timestamp: now });
+    }
+
+    // Now continue normally
     const body = await req.json();
+
 
     const name = String(body?.name ?? "").trim();
     const email = String(body?.email ?? "").trim();
@@ -24,6 +66,12 @@ export async function POST(req: Request) {
     const time = String(body?.time ?? "").trim();
     const guests = String(body?.guests ?? "").trim();
     const message = String(body?.message ?? "").trim();
+    const company = String(body?.company ?? "").trim();
+
+// Honeypot triggered → silently accept (prevents bots learning)
+   if (company) {
+    return NextResponse.json({ ok: true });
+   }
 
     // Basic validation
     if (!name || !email || !date || !time || !guests) {

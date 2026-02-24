@@ -286,6 +286,7 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
     time: String(formData.get("time") ?? ""),
     guests: String(formData.get("guests") ?? ""),
     message: String(formData.get("message") ?? ""),
+    company: String(formData.get("company") ?? ""), // add honeypot field to catch bots (should be empty)
   };
 
   const nextErrors: Record<string, string> = {};
@@ -535,10 +536,25 @@ if (Object.keys(nextErrors).length > 0) {
              onSubmit={handleReserveSubmit}
              className="space-y-3"
              >
+
+             {/* Honeypot (anti-spam): humans won't see this */}
+              <div className="hidden">
+              <label>
+               Company
+               <input
+               type="text"
+               name="company"
+               tabIndex={-1}
+               autoComplete="off"
+                />
+               </label>
+               </div>
+
               <fieldset
               disabled={reserveStatus === "loading"}
               className="space-y-3 disabled:opacity-80 disabled:cursor-not-allowed"
               >
+
               <div className="grid sm:grid-cols-2 gap-3">
                 <label className="text-sm">
                   <span className="text-white/80">{t.reserve.fields.name}</span>
