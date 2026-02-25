@@ -34,8 +34,6 @@ export async function POST(req: Request) {
     forwardedFor?.split(",")[0]?.trim() ||
     "unknown";
 
-    console.log("RATE_LIMIT ip =", ip);
-
     const now = Date.now();
     const record = ipStore.get(ip);
 
