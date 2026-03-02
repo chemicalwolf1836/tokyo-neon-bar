@@ -1,4 +1,5 @@
 "use client";
+import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -42,8 +43,20 @@ const copy = {
         { name: "Midnight Ume", desc: "Umeshu, plum, spice, lime", price: "¥1,400" },
         { name: "Cyber Espresso", desc: "Vodka, coffee, cocoa, velvet foam", price: "¥1,700" },
       ],
+
       note: "Allergy info available on request.",
     },
+
+finder: {
+    title: "Cocktail Finder",
+    bestMatch: "1 best match",
+    mood: "Mood",
+    sweetness: "Sweetness",
+    likes: "Likes (optional)",
+    avoid: "Avoid (optional)",
+    tip: 'Tip: try "yuzu", "coffee", "plum", "sparkling".'
+   },
+
     reserve: {
       title: "Reservations",
       subtitle:
@@ -135,6 +148,15 @@ const copy = {
       ],
       note: "アレルギー情報はスタッフへお声がけください。",
     },
+    finder: {
+  title: "カクテル診断",
+  bestMatch: "おすすめ 1杯",
+  mood: "気分",
+  sweetness: "甘さ",
+  likes: "好きな味（任意）",
+  avoid: "避けたい味（任意）",
+  tip: "ヒント：「ゆず」「コーヒー」「梅」「スパークリング」など"
+},
     reserve: {
       title: "予約",
       subtitle:
@@ -481,9 +503,16 @@ if (Object.keys(nextErrors).length > 0) {
               </div>
             </motion.div>
           ))}
-        </div>
+       </div>
 
-        <p className="mt-5 text-sm text-white/60">{t.menu.note}</p>
+       {/* Cocktail Finder */}
+<div className="mt-8 flex justify-center">
+  <div className="max-auto w-full max-w-3xl">
+    <CocktailFinderMini t={copy[lang].finder} />
+  </div>
+</div>
+
+        <p className="mt-6 text-sm text-white/60 text-center">{t.menu.note}</p>
       </Section>
 
       {/* ATMOSPHERE */}
