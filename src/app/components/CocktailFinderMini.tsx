@@ -47,7 +47,28 @@ function scoreItem(
   return score;
 }
 
-export default function CocktailFinderMini ({ t }: { t: any })  {
+const MOOD_OPTIONS = [
+  { value: "after-work", en: "After-work", jp: "仕事帰り" },
+  { value: "chill", en: "Chill", jp: "リラックス" },
+  { value: "romantic", en: "Romantic", jp: "デート向け" },
+  { value: "party", en: "Party", jp: "盛り上がり" },
+] as const;
+
+const SWEETNESS_OPTIONS = [
+  { value: "any", en: "Any", jp: "指定なし" },
+  { value: "dry", en: "Dry", jp: "ドライ" },
+  { value: "balanced", en: "Balanced", jp: "バランス" },
+  { value: "sweet", en: "Sweet", jp: "甘め" },
+] as const;
+
+export default function CocktailFinderMini({
+  t,
+  lang,
+}: {
+  t: any;
+  lang: "en" | "jp";
+}) {
+
   const [mood, setMood] = useState<Mood>("after-work");
   const [sweetness, setSweetness] = useState<Sweetness>("any");
   const [likesText, setLikesText] = useState("");
@@ -82,10 +103,12 @@ export default function CocktailFinderMini ({ t }: { t: any })  {
             value={mood}
             onChange={(e) => setMood(e.target.value as Mood)}
           >
-            <option value="after-work">After-work</option>
-            <option value="chill">Chill</option>
-            <option value="romantic">Romantic</option>
-            <option value="party">Party</option>
+            {MOOD_OPTIONS.map((opt) => (
+  <option key={opt.value} value={opt.value}>
+    {lang === "jp" ? opt.jp : opt.en}
+  </option>
+))}
+
           </select>
         </label>
 
@@ -96,10 +119,12 @@ export default function CocktailFinderMini ({ t }: { t: any })  {
             value={sweetness}
             onChange={(e) => setSweetness(e.target.value as Sweetness)}
           >
-            <option value="any">Any</option>
-            <option value="dry">Dry</option>
-            <option value="balanced">Balanced</option>
-            <option value="sweet">Sweet</option>
+           {SWEETNESS_OPTIONS.map((opt) => (
+  <option key={opt.value} value={opt.value}>
+    {lang === "jp" ? opt.jp : opt.en}
+  </option>
+))}
+
           </select>
         </label>
 

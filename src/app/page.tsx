@@ -508,7 +508,9 @@ if (Object.keys(nextErrors).length > 0) {
        {/* Cocktail Finder */}
 <div className="mt-8 flex justify-center">
   <div className="max-auto w-full max-w-3xl">
-    <CocktailFinderMini t={copy[lang].finder} />
+    <CocktailFinderMini t={t} lang={lang} />
+
+
   </div>
 </div>
 
