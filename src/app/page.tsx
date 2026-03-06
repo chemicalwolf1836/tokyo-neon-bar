@@ -702,16 +702,42 @@ if (Object.keys(nextErrors).length > 0) {
           </div>
 
           <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
-            <p className="text-sm text-white/80 font-medium">Why this sells</p>
-            <ul className="mt-3 space-y-2 text-sm text-[rgb(var(--muted))]">
-              <li>• Tourists understand the menu (EN/JP toggle).</li>
-              <li>• Reservation inquiry increases conversion vs Instagram only.</li>
-              <li>• Modern design makes the bar feel “worth visiting”.</li>
-              <li>• You can upsell bilingual + SEO + booking integration.</li>
-            </ul>
-            <p className="mt-5 text-xs text-white/55">
-              Next step (for real clients): connect this form to email (Resend) or a booking tool.
-            </p>
+            <p className="text-sm text-white/80 font-medium">
+  {lang === "jp" ? "なぜこのサイトが効果的なのか" : "Why this sells"}
+</p>
+
+<ul className="mt-3 space-y-2 text-sm text-[rgb(var(--muted))]">
+  <li>
+    {lang === "jp"
+      ? "観光客でもメニューを理解できる（EN / JP 切り替え）。"
+      : "Tourists understand the menu (EN/JP toggle)."}
+  </li>
+
+  <li>
+    {lang === "jp"
+      ? "予約フォームによりInstagramだけよりも来店率が上がる。"
+      : "Reservation inquiry increases conversion vs Instagram only."}
+  </li>
+
+  <li>
+    {lang === "jp"
+      ? "モダンなデザインで『行ってみたいバー』という印象を作る。"
+      : "Modern design makes the bar feel 'worth visiting'."}
+  </li>
+
+  <li>
+    {lang === "jp"
+      ? "多言語対応 + SEO + 予約システムの拡張が可能。"
+      : "You can upsell bilingual + SEO + booking integration."}
+  </li>
+</ul>
+
+<p className="mt-5 text-xs text-white/55">
+  {lang === "jp"
+    ? "次のステップ（実際のクライアント向け）：このフォームをメール（Resend）や予約システムに接続します。"
+    : "Next step (for real clients): connect this form to email (Resend) or a booking tool."}
+</p>
+
           </div>
         </div>
       </Section>
@@ -731,7 +757,9 @@ if (Object.keys(nextErrors).length > 0) {
   </div>
 
   <p className="mt-5 text-xs text-white/55">
-    Tip: For real clients, we’ll confirm their exact rules (cover, smoking, payment, last entry).
+    {lang === "jp"
+  ? "※実際の店舗では、チャージ・喫煙ルール・支払い方法・ラストオーダーなどを確認します。"
+  : "Tip: For real clients, we'll confirm their exact rules (cover charge, smoking, payment, last entry)."}
   </p>
 </Section>
 
@@ -741,7 +769,7 @@ if (Object.keys(nextErrors).length > 0) {
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
-                <p className="text-sm text-white/85">Address</p>
+                <p className="text-sm text-white/85">{lang === "jp" ? "住所" : "Address"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.address}</p>
               </div>
             </div>
@@ -749,7 +777,7 @@ if (Object.keys(nextErrors).length > 0) {
             <div className="flex items-start gap-3">
               <Clock className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
-                <p className="text-sm text-white/85">Hours</p>
+                <p className="text-sm text-white/85">{lang === "jp" ? "営業時間" : "Hours"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.hours}</p>
               </div>
             </div>
@@ -757,7 +785,7 @@ if (Object.keys(nextErrors).length > 0) {
             <div className="flex items-start gap-3">
               <Phone className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
-                <p className="text-sm text-white/85">Phone</p>
+                <p className="text-sm text-white/85">{lang === "jp" ? "電話番号" : "Phone"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.phone}</p>
               </div>
             </div>
@@ -765,7 +793,7 @@ if (Object.keys(nextErrors).length > 0) {
             <div className="flex items-start gap-3">
               <Mail className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
-                <p className="text-sm text-white/85">Email</p>
+                <p className="text-sm text-white/85">{lang === "jp" ? "メール" : "Email"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.email}</p>
               </div>
             </div>
@@ -773,7 +801,7 @@ if (Object.keys(nextErrors).length > 0) {
             <div className="flex items-start gap-3">
               <Instagram className="h-5 w-5 text-white/70 mt-0.5" />
               <div>
-                <p className="text-sm text-white/85">Instagram</p>
+                <p className="text-sm text-white/85">{lang === "jp" ? "インスタグラム" : "Instagram"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">@neonkissa_tokyo (placeholder)</p>
               </div>
             </div>
@@ -797,7 +825,9 @@ if (Object.keys(nextErrors).length > 0) {
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border-t border-white/10">
     <div className="text-sm text-white/70">
       {/* Replace text later with your real address details */}
-      Shinjuku Station • 4 min walk
+      {lang === "jp"
+  ? "新宿駅・徒歩4分"
+  : "Shinjuku Station • 4 min walk"}
     </div>
 
     <a
@@ -806,7 +836,9 @@ if (Object.keys(nextErrors).length > 0) {
       rel="noreferrer"
       className="neon-ring rounded-full px-4 py-2 text-xs text-white/85 hover:text-white transition w-fit"
     >
-      Open in Google Maps →
+      {lang === "jp"
+  ? "Googleマップで開く →"
+  : "Open in Google Maps →"}
     </a>
   </div>
 </div>

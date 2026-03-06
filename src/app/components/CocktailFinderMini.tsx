@@ -23,25 +23,33 @@ function scoreItem(
 ) {
   let score = 0;
 
-  // Mood match
   if (item.vibes.includes(prefs.mood)) score += 3;
 
-  // Sweetness match
   if (prefs.sweetness !== "any") {
     if (item.sweetness === prefs.sweetness) score += 2;
     else score -= 1;
   }
 
-  // Likes tags
   for (const like of prefs.likes) {
     if (item.tags.includes(like)) score += 2;
-    if (item.description.toLowerCase().includes(like)) score += 1;
-    if (item.name.toLowerCase().includes(like)) score += 1;
+
+    if (
+      item.description.en.toLowerCase().includes(like) ||
+      item.description.jp.toLowerCase().includes(like)
+    ) score += 1;
+
+    if (
+      item.name.en.toLowerCase().includes(like) ||
+      item.name.jp.toLowerCase().includes(like)
+    ) score += 1;
   }
 
-  // Avoid tags (heavy penalty)
   for (const bad of prefs.avoid) {
-    if (item.tags.includes(bad) || item.description.toLowerCase().includes(bad)) score -= 5;
+    if (
+      item.tags.includes(bad) ||
+      item.description.en.toLowerCase().includes(bad) ||
+      item.description.jp.toLowerCase().includes(bad)
+    ) score -= 5;
   }
 
   return score;
@@ -60,6 +68,39 @@ const SWEETNESS_OPTIONS = [
   { value: "balanced", en: "Balanced", jp: "バランス" },
   { value: "sweet", en: "Sweet", jp: "甘め" },
 ] as const;
+
+const TAG_LABELS: Record<string, { en: string; jp: string }> = {
+  citrus: { en: "Citrus", jp: "柑橘" },
+  sparkling: { en: "Sparkling", jp: "スパークリング" },
+  refreshing: { en: "Refreshing", jp: "爽やか" },
+  light: { en: "Light", jp: "軽め" },
+  smoky: { en: "Smoky", jp: "スモーキー" },
+  yuzu: { en: "Yuzu", jp: "ゆず" },
+  tonic: { en: "Tonic", jp: "トニック" },
+  floral: { en: "Floral", jp: "フローラル" },
+  plum: { en: "Plum", jp: "梅" },
+  umeshu: { en: "Umeshu", jp: "梅酒" },
+  smooth: { en: "Smooth", jp: "まろやか" },
+  spice: { en: "Spice", jp: "スパイス" },
+  lime: { en: "Lime", jp: "ライム" },
+  coffee: { en: "Coffee", jp: "コーヒー" },
+  cocoa: { en: "Cocoa", jp: "ココア" }
+};
+
+const BASE_LABELS = {
+  whiskey: { en: "Whiskey", jp: "ウイスキー" },
+  gin: { en: "Gin", jp: "ジン" },
+  vodka: { en: "Vodka", jp: "ウォッカ" },
+  umeshu: { en: "Umeshu", jp: "梅酒" },
+};
+
+const SWEETNESS_LABELS = {
+  dry: { en: "Dry", jp: "ドライ" },
+  balanced: { en: "Balanced", jp: "バランス" },
+  sweet: { en: "Sweet", jp: "甘め" },
+};
+
+
 
 export default function CocktailFinderMini({
   t,
@@ -132,7 +173,7 @@ export default function CocktailFinderMini({
           {t.likes}
           <input
             className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none"
-            placeholder="citrus, floral, coffee"
+            placeholder={lang === "jp" ? "柑橘系、フローラル、コーヒー" : "citrus, floral, coffee"}
             value={likesText}
             onChange={(e) => setLikesText(e.target.value)}
           />
@@ -143,7 +184,7 @@ export default function CocktailFinderMini({
         {t.avoid}
         <input
           className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none"
-          placeholder="bitter, smoky, strong"
+          placeholder= {lang === "jp" ? "苦味、スモーキー、強い" : "bitter, smoky, strong"}
           value={avoidText}
           onChange={(e) => setAvoidText(e.target.value)}
         />
@@ -152,10 +193,14 @@ export default function CocktailFinderMini({
       <div className="mt-4 rounded-2xl border border-white/10 bg-black/30 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="font-semibold text-white">{best.name}</div>
-            <div className="mt-1 text-sm text-white/70">{best.description}</div>
+            <div className="font-semibold text-white">{lang === "jp" ? best.name.jp : best.name.en}</div>
+            <div className="mt-1 text-sm text-white/70">{lang === "jp" ? best.description.jp : best.description.en}</div>
             <div className="mt-2 text-xs text-white/60">
-              {best.base} • {best.sweetness}
+              {lang === "jp" ? BASE_LABELS[best.base].jp : BASE_LABELS[best.base].en}
+・
+{lang === "jp"
+  ? SWEETNESS_LABELS[best.sweetness].jp
+  : SWEETNESS_LABELS[best.sweetness].en}
             </div>
           </div>
           <div className="shrink-0 text-sm font-semibold text-white/80">
