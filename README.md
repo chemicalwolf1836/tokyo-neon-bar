@@ -15,16 +15,16 @@ https://tokyo-neon-bar.vercel.app
 ## Screenshots
 
 ### Homepage
-<img src="screenshots/homepage.png" width="900">
+<img src="src/app/screenshots/homepage.png" width="900">
 
 ### Cocktail Finder
-<img src="screenshots/cocktail-finder.png" width="900">
+<img src="src/app/screenshots/cocktail-finder.png" width="900">
 
 ### Reservation Form
-<img src="screenshots/reservation-form.png" width="900">
+<img src="src/app/screenshots/reservation-form.png" width="900">
 
 ### Mobile Layout
-<img src="screenshots/mobile-layout.png" width="400">
+<img src="src/app/screenshots/mobile-layout.png" width="400">
 
 ---
 
