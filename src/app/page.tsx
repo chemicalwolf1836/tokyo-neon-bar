@@ -1,8 +1,8 @@
 "use client";
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
   Clock,
@@ -11,6 +11,13 @@ import {
   Mail,
   Sparkles,
   ArrowRight,
+  Menu,
+  X,
+  GlassWater,
+  Flower2,
+  Moon,
+  Coffee,
+  ArrowUp,
 } from "lucide-react";
 
 type Lang = "en" | "jp";
@@ -242,6 +249,7 @@ function Section({
           transition={{ duration: 0.55 }}
           className="mb-8"
         >
+          <div className="neon-line mb-3" />
           <h2 className="neon-text text-2xl md:text-3xl font-semibold tracking-tight">
             {title}
           </h2>
@@ -278,8 +286,8 @@ function StatusBanner({
     "mt-3 rounded-xl border px-3 py-2 text-sm flex items-start gap-2";
   const styles =
     variant === "success"
-      ? "border-green-400/25 bg-green-500/10 text-green-200"
-      : "border-red-400/25 bg-red-500/10 text-red-200";
+      ? "border-cyan-400/25 bg-cyan-500/10 text-cyan-200"
+      : "border-pink-400/30 bg-pink-500/10 text-pink-200";
 
   return <div className={`${base} ${styles}`}>{children}</div>;
 }
@@ -291,6 +299,14 @@ export default function Page() {
   const [reserveStatus, setReserveStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [reserveError, setReserveError] = useState<string>("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
 async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -356,26 +372,65 @@ if (Object.keys(nextErrors).length > 0) {
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-white/80" />
-            <span className="neon-text font-semibold tracking-wide">
+            <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
               {t.brand}
             </span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-sm text-white/80">
-            <a className="hover:text-white" href="#menu">{t.nav.menu}</a>
-            <a className="hover:text-white" href="#reserve">{t.nav.reserve}</a>
-            <a className="hover:text-white" href="#access">{t.nav.access}</a>
-            <a className="hover:text-white" href="#about">{t.nav.about}</a>
+            <a className="hover:text-white transition" href="#menu">{t.nav.menu}</a>
+            <a className="hover:text-white transition" href="#reserve">{t.nav.reserve}</a>
+            <a className="hover:text-white transition" href="#access">{t.nav.access}</a>
+            <a className="hover:text-white transition" href="#about">{t.nav.about}</a>
           </nav>
 
-          <button
-            onClick={() => setLang((p) => (p === "en" ? "jp" : "en"))}
-            className="neon-ring rounded-full px-3 py-1.5 text-xs text-white/90 hover:text-white transition"
-            aria-label="Toggle language"
-          >
-            {lang === "en" ? "JP" : "EN"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setLang((p) => (p === "en" ? "jp" : "en"))}
+              className="neon-ring rounded-full px-3 py-1.5 text-xs text-white/90 hover:text-white transition"
+              aria-label="Toggle language"
+            >
+              {lang === "en" ? "JP" : "EN"}
+            </button>
+            <button
+              onClick={() => setMenuOpen((p) => !p)}
+              className="md:hidden p-1.5 text-white/70 hover:text-white transition"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden overflow-hidden border-t border-white/10 bg-black/60 backdrop-blur-md"
+            >
+              <div className="flex flex-col px-4 py-3 gap-1">
+                {[
+                  { href: "#menu", label: t.nav.menu },
+                  { href: "#reserve", label: t.nav.reserve },
+                  { href: "#access", label: t.nav.access },
+                  { href: "#about", label: t.nav.about },
+                ].map(({ href, label }) => (
+                  <a
+                    key={href}
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className="py-2.5 text-sm text-white/75 hover:text-white border-b border-white/5 last:border-0 transition"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
       <section className="relative pt-14 md:pt-20 pb-10">
@@ -390,11 +445,13 @@ if (Object.keys(nextErrors).length > 0) {
               {t.hero.kicker}
             </motion.p>
 
+            <div className="neon-line mt-4 mb-1" />
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.05 }}
               className="neon-text mt-3 text-3xl md:text-5xl font-semibold tracking-tight"
+              style={{ fontFamily: "var(--font-mono)" }}
             >
               {t.hero.title}
             </motion.h1>
@@ -422,7 +479,7 @@ if (Object.keys(nextErrors).length > 0) {
             >
               <a
                 href="#reserve"
-                className="neon-ring rounded-2xl px-5 py-3 text-sm font-medium bg-white/5 hover:bg-white/10 transition inline-flex items-center justify-center gap-2"
+                className="neon-ring rounded-2xl px-5 py-3 text-sm font-medium bg-cyan-500/10 border border-cyan-400/25 hover:bg-cyan-500/20 text-cyan-100 transition inline-flex items-center justify-center gap-2"
               >
                 {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4" />
               </a>
@@ -435,10 +492,16 @@ if (Object.keys(nextErrors).length > 0) {
             </motion.div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {t.hero.badges.map((b) => (
+              {t.hero.badges.map((b, i) => (
                 <span
                   key={b}
-                  className="rounded-full px-3 py-1 text-xs border border-white/10 bg-white/5 text-white/80"
+                  className={`rounded-full px-3 py-1 text-xs ${
+                    i === 0
+                      ? "border border-cyan-400/30 bg-cyan-500/10 text-cyan-200"
+                      : i === 1
+                      ? "border border-pink-400/30 bg-pink-500/10 text-pink-200"
+                      : "border border-violet-400/30 bg-violet-500/10 text-violet-200"
+                  }`}
                 >
                   {b}
                 </span>
@@ -482,28 +545,41 @@ if (Object.keys(nextErrors).length > 0) {
 </section>
 
       <Section id="menu" title={t.menu.title} subtitle={t.menu.subtitle}>
+        {(() => {
+          const menuIcons = [GlassWater, Flower2, Moon, Coffee];
+          return (
         <div className="grid md:grid-cols-2 gap-4">
-          {t.menu.items.map((it) => (
+          {t.menu.items.map((it, i) => {
+            const Icon = menuIcons[i];
+            return (
             <motion.div
               key={it.name}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, delay: i * 0.07 }}
               className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01]"
             >
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="font-medium">{it.name}</p>
-                  <p className="mt-1 text-sm text-[rgb(var(--muted))]">
-                    {it.desc}
-                  </p>
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 rounded-lg p-1.5 bg-white/5 text-white/40">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="font-medium">{it.name}</p>
+                    <p className="mt-1 text-sm text-[rgb(var(--muted))]">
+                      {it.desc}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-white/85">{it.price}</p>
+                <p className="text-sm font-medium neon-price shrink-0">{it.price}</p>
               </div>
             </motion.div>
-          ))}
-       </div>
+            );
+          })}
+        </div>
+          );
+        })()}
 
        {/* Cocktail Finder */}
 <div className="mt-8 flex justify-center">
@@ -548,7 +624,7 @@ if (Object.keys(nextErrors).length > 0) {
     >
       <div className="relative aspect-[16/10]">
         <Image
-          src="/images/gallery-2*.jpg"
+          src="/images/gallery-2.jpg"
           alt="Tokyo neon architecture"
           fill
           className="object-cover transition duration-500 hover:scale-105"
@@ -861,11 +937,35 @@ if (Object.keys(nextErrors).length > 0) {
           ))}
         </div>
       </Section>
-      <footer className="border-t border-white/10 mt-16 py-8 text-center">
-       <p className="text-sm text-white/50">
-         © {new Date().getFullYear()} NEON KISSA • Built with Next.js + Tailwind
-       </p>
-       </footer>
+      <footer className="border-t border-white/10 mt-16 py-10 text-center">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="neon-line mx-auto mb-6" />
+          <div className="flex items-center justify-center gap-5 mb-4">
+            <a href="#" aria-label="Instagram" className="text-white/40 hover:text-cyan-300 transition">
+              <Instagram className="h-5 w-5" />
+            </a>
+          </div>
+          <p className="text-sm text-white/40">
+            © {new Date().getFullYear()} NEON KISSA • Built with Next.js + Tailwind
+          </p>
+        </div>
+      </footer>
+
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-6 right-6 z-50 neon-ring rounded-full p-3 bg-black/60 backdrop-blur-sm text-white/70 hover:text-white transition"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="h-4 w-4" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
