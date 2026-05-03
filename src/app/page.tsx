@@ -18,6 +18,9 @@ import {
   Moon,
   Coffee,
   ArrowUp,
+  Globe,
+  Star,
+  CreditCard,
 } from "lucide-react";
 
 type Lang = "en" | "jp";
@@ -530,14 +533,19 @@ if (Object.keys(nextErrors).length > 0) {
 
       {/* Badges */}
       <div className="flex flex-wrap justify-center gap-3">
-        {t.trust.badges.map((badge: string) => (
-          <span
-            key={badge}
-            className="px-4 py-1 text-xs rounded-full bg-white/10 border border-white/20 text-white/80"
-          >
-            {badge}
-          </span>
-        ))}
+        {t.trust.badges.map((badge: string, i: number) => {
+          const icons = [Globe, Star, CreditCard, Moon];
+          const Icon = icons[i] ?? Globe;
+          return (
+            <span
+              key={badge}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs rounded-full bg-white/10 border border-white/20 text-white/80"
+            >
+              <Icon className="h-3 w-3 text-white/50" />
+              {badge}
+            </span>
+          );
+        })}
       </div>
 
     </div>
@@ -694,6 +702,7 @@ if (Object.keys(nextErrors).length > 0) {
                   <input
                     name="date"
                     type="date"
+                    min={new Date().toISOString().split("T")[0]}
                     className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
                     required
                   />
