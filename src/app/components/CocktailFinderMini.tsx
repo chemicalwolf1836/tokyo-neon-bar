@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MENU_ITEMS } from "@/app/data/menu";
 
 type Mood = "after-work" | "chill" | "romantic" | "party";
@@ -130,50 +131,51 @@ export default function CocktailFinderMini({
   }, [mood, sweetness, likes, avoid]);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-5">
-      <div className="flex items-center justify-between gap-3">
-        <div className="text-sm font-semibold text-white">{t.title}</div>
-        <div className="text-xs text-white/60">{t.bestMatch}</div>
+    <div className="glow-border rounded-2xl bg-white/5 backdrop-blur-sm p-5">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <div className="neon-line mb-2" />
+          <div className="text-sm font-semibold neon-text">{t.title}</div>
+        </div>
+        <div className="text-xs text-white/50 border border-white/10 rounded-full px-2 py-0.5">{t.bestMatch}</div>
       </div>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3">
         <label className="text-xs text-white/70">
           {t.mood}
           <select
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none"
+            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/25 transition"
             value={mood}
             onChange={(e) => setMood(e.target.value as Mood)}
           >
             {MOOD_OPTIONS.map((opt) => (
-  <option key={opt.value} value={opt.value}>
-    {lang === "jp" ? opt.jp : opt.en}
-  </option>
-))}
-
+              <option key={opt.value} value={opt.value}>
+                {lang === "jp" ? opt.jp : opt.en}
+              </option>
+            ))}
           </select>
         </label>
 
         <label className="text-xs text-white/70">
           {t.sweetness}
           <select
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none"
+            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/25 transition"
             value={sweetness}
             onChange={(e) => setSweetness(e.target.value as Sweetness)}
           >
-           {SWEETNESS_OPTIONS.map((opt) => (
-  <option key={opt.value} value={opt.value}>
-    {lang === "jp" ? opt.jp : opt.en}
-  </option>
-))}
-
+            {SWEETNESS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {lang === "jp" ? opt.jp : opt.en}
+              </option>
+            ))}
           </select>
         </label>
 
         <label className="text-xs text-white/70">
           {t.likes}
           <input
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none"
-            placeholder={lang === "jp" ? "柑橘系、フローラル、コーヒー" : "citrus, floral, coffee"}
+            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25 transition"
+            placeholder={lang === "jp" ? "柑橘系、フローラル" : "citrus, floral"}
             value={likesText}
             onChange={(e) => setLikesText(e.target.value)}
           />
@@ -183,33 +185,57 @@ export default function CocktailFinderMini({
       <label className="mt-3 block text-xs text-white/70">
         {t.avoid}
         <input
-          className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none"
-          placeholder= {lang === "jp" ? "苦味、スモーキー、強い" : "bitter, smoky, strong"}
+          className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25 transition"
+          placeholder={lang === "jp" ? "苦味、スモーキー" : "bitter, smoky"}
           value={avoidText}
           onChange={(e) => setAvoidText(e.target.value)}
         />
       </label>
 
-      <div className="mt-4 rounded-2xl border border-white/10 bg-black/30 p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="font-semibold text-white">{lang === "jp" ? best.name.jp : best.name.en}</div>
-            <div className="mt-1 text-sm text-white/70">{lang === "jp" ? best.description.jp : best.description.en}</div>
-            <div className="mt-2 text-xs text-white/60">
-              {lang === "jp" ? BASE_LABELS[best.base].jp : BASE_LABELS[best.base].en}
-・
-{lang === "jp"
-  ? SWEETNESS_LABELS[best.sweetness].jp
-  : SWEETNESS_LABELS[best.sweetness].en}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={best.name.en}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.25 }}
+          className="mt-4 neon-ring glow-border rounded-2xl bg-black/30 p-4"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-white">
+                {lang === "jp" ? best.name.jp : best.name.en}
+              </div>
+              <div className="mt-1 text-sm text-white/70">
+                {lang === "jp" ? best.description.jp : best.description.en}
+              </div>
+              <div className="mt-2 text-xs text-white/50">
+                {lang === "jp" ? BASE_LABELS[best.base].jp : BASE_LABELS[best.base].en}
+                {" · "}
+                {lang === "jp" ? SWEETNESS_LABELS[best.sweetness].jp : SWEETNESS_LABELS[best.sweetness].en}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {best.tags.map((tag) => {
+                  const label = TAG_LABELS[tag];
+                  return (
+                    <span
+                      key={tag}
+                      className="rounded-full px-2 py-0.5 text-[11px] border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80"
+                    >
+                      {label ? (lang === "jp" ? label.jp : label.en) : tag}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="shrink-0 text-sm font-semibold neon-price">
+              ¥{best.priceYen.toLocaleString("ja-JP")}
             </div>
           </div>
-          <div className="shrink-0 text-sm font-semibold text-white/80">
-            ¥{best.priceYen.toLocaleString("ja-JP")}
-          </div>
-        </div>
-      </div>
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="mt-2 text-[11px] text-white/50">
+      <div className="mt-2 text-[11px] text-white/40">
         {t.tip}
       </div>
     </div>

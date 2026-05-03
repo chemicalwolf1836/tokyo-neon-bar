@@ -16,6 +16,10 @@ html, body {
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: #050508; /* clean dark base */
   color: white;
