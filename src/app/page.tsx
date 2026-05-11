@@ -304,11 +304,27 @@ export default function Page() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const ids = ["menu", "reserve", "access", "about"];
+    const observers = ids.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      const observer = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { threshold: 0.4 }
+      );
+      observer.observe(el);
+      return observer;
+    });
+    return () => observers.forEach((o) => o?.disconnect());
   }, []);
 
 async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -380,11 +396,21 @@ if (Object.keys(nextErrors).length > 0) {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm text-white/80">
-            <a className="hover:text-white transition" href="#menu">{t.nav.menu}</a>
-            <a className="hover:text-white transition" href="#reserve">{t.nav.reserve}</a>
-            <a className="hover:text-white transition" href="#access">{t.nav.access}</a>
-            <a className="hover:text-white transition" href="#about">{t.nav.about}</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            {[
+              { href: "#menu", label: t.nav.menu, id: "menu" },
+              { href: "#reserve", label: t.nav.reserve, id: "reserve" },
+              { href: "#access", label: t.nav.access, id: "access" },
+              { href: "#about", label: t.nav.about, id: "about" },
+            ].map(({ href, label, id }) => (
+              <a
+                key={id}
+                href={href}
+                className={`transition ${activeSection === id ? "text-cyan-300" : "text-white/60 hover:text-white"}`}
+              >
+                {label}
+              </a>
+            ))}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -416,16 +442,16 @@ if (Object.keys(nextErrors).length > 0) {
             >
               <div className="flex flex-col px-4 py-3 gap-1">
                 {[
-                  { href: "#menu", label: t.nav.menu },
-                  { href: "#reserve", label: t.nav.reserve },
-                  { href: "#access", label: t.nav.access },
-                  { href: "#about", label: t.nav.about },
-                ].map(({ href, label }) => (
+                  { href: "#menu", label: t.nav.menu, id: "menu" },
+                  { href: "#reserve", label: t.nav.reserve, id: "reserve" },
+                  { href: "#access", label: t.nav.access, id: "access" },
+                  { href: "#about", label: t.nav.about, id: "about" },
+                ].map(({ href, label, id }) => (
                   <a
                     key={href}
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className="py-2.5 text-sm text-white/75 hover:text-white border-b border-white/5 last:border-0 transition"
+                    className={`py-2.5 text-sm border-b border-white/5 last:border-0 transition ${activeSection === id ? "text-cyan-300" : "text-white/75 hover:text-white"}`}
                   >
                     {label}
                   </a>
@@ -523,13 +549,19 @@ if (Object.keys(nextErrors).length > 0) {
        <div className="flex flex-col md:flex-row items-center justify-center gap-6">
 
       {/* Rating */}
-      <div className="flex items-center gap-3">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.45 }}
+        className="flex items-center gap-3"
+      >
         <div className="text-yellow-400 text-xl">★★★★★</div>
         <div>
           <div className="font-semibold text-white">{t.trust.rating}</div>
           <div className="text-xs text-white/60">{t.trust.reviews}</div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Badges */}
       <div className="flex flex-wrap justify-center gap-3">
@@ -537,13 +569,17 @@ if (Object.keys(nextErrors).length > 0) {
           const icons = [Globe, Star, CreditCard, Moon];
           const Icon = icons[i] ?? Globe;
           return (
-            <span
+            <motion.span
               key={badge}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.07 }}
               className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs rounded-full bg-white/10 border border-white/20 text-white/80"
             >
               <Icon className="h-3 w-3 text-white/50" />
               {badge}
-            </span>
+            </motion.span>
           );
         })}
       </div>
@@ -616,6 +652,8 @@ if (Object.keys(nextErrors).length > 0) {
           src="/images/gallery-1.jpg"
           alt="Neon skyline vibe"
           fill
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAMklEQVQIW2NkYGD4z8BQDwAEhgF/AwMD/38GBgYGJgYGBv8MDAwMTAwMDP8ZGBj+AwALOgQFcp0rNAAAAABJRU5ErkJggg=="
           className="object-cover transition duration-500 hover:scale-105"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
@@ -635,6 +673,8 @@ if (Object.keys(nextErrors).length > 0) {
           src="/images/gallery-2.jpg"
           alt="Tokyo neon architecture"
           fill
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAMklEQVQIW2NkYGD4z8BQDwAEhgF/AwMD/38GBgYGJgYGBv8MDAwMTAwMDP8ZGBj+AwALOgQFcp0rNAAAAABJRU5ErkJggg=="
           className="object-cover transition duration-500 hover:scale-105"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
