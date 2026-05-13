@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { GlassWater, Flower2, Moon, Coffee, type LucideIcon } from "lucide-react";
 import { MENU_ITEMS } from "@/app/data/menu";
 
 type Mood = "after-work" | "chill" | "romantic" | "party";
@@ -100,6 +101,15 @@ const SWEETNESS_LABELS = {
   balanced: { en: "Balanced", jp: "バランス" },
   sweet: { en: "Sweet", jp: "甘め" },
 };
+
+const VIBE_LABELS: Record<string, { en: string; jp: string }> = {
+  "after-work": { en: "After-work", jp: "仕事帰り" },
+  chill: { en: "Chill", jp: "リラックス" },
+  romantic: { en: "Romantic", jp: "デート向け" },
+  party: { en: "Party", jp: "盛り上がり" },
+};
+
+const MENU_ICONS: LucideIcon[] = [GlassWater, Flower2, Moon, Coffee];
 
 
 
@@ -212,37 +222,73 @@ export default function CocktailFinderMini({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           transition={{ duration: 0.25 }}
-          className="mt-4 neon-ring glow-border rounded-2xl bg-black/30 p-4"
+          className="mt-4 neon-ring glow-border rounded-2xl bg-black/30 overflow-hidden"
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-white">
-                {lang === "jp" ? best.name.jp : best.name.en}
-              </div>
-              <div className="mt-1 text-sm text-white/70">
-                {lang === "jp" ? best.description.jp : best.description.en}
-              </div>
-              <div className="mt-2 text-xs text-white/50">
-                {lang === "jp" ? BASE_LABELS[best.base].jp : BASE_LABELS[best.base].en}
-                {" · "}
-                {lang === "jp" ? SWEETNESS_LABELS[best.sweetness].jp : SWEETNESS_LABELS[best.sweetness].en}
-              </div>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {best.tags.map((tag) => {
-                  const label = TAG_LABELS[tag];
+          {/* Top neon border */}
+          <div className="h-px w-full bg-gradient-to-r from-cyan-400/60 via-violet-400/40 to-transparent" />
+
+          <div className="p-4">
+            {/* Header row: icon + name + price */}
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex items-center gap-2.5">
+                {(() => {
+                  const idx = MENU_ITEMS.indexOf(best);
+                  const Icon = MENU_ICONS[idx] ?? GlassWater;
                   return (
-                    <span
-                      key={tag}
-                      className="rounded-full px-2 py-0.5 text-[11px] border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80"
-                    >
-                      {label ? (lang === "jp" ? label.jp : label.en) : tag}
-                    </span>
+                    <div className="rounded-lg p-1.5 bg-white/5 text-white/40 shrink-0">
+                      <Icon className="h-4 w-4" />
+                    </div>
                   );
-                })}
+                })()}
+                <div>
+                  <div className="font-semibold text-white">
+                    {lang === "jp" ? best.name.jp : best.name.en}
+                  </div>
+                  <div className="text-sm text-white/60 mt-0.5">
+                    {lang === "jp" ? best.description.jp : best.description.en}
+                  </div>
+                </div>
+              </div>
+              <div className="shrink-0 text-sm font-semibold neon-price">
+                ¥{best.priceYen.toLocaleString("ja-JP")}
               </div>
             </div>
-            <div className="shrink-0 text-sm font-semibold neon-price">
-              ¥{best.priceYen.toLocaleString("ja-JP")}
+
+            {/* Base · Sweetness */}
+            <div className="text-xs text-white/45 mb-3">
+              {lang === "jp" ? BASE_LABELS[best.base].jp : BASE_LABELS[best.base].en}
+              {" · "}
+              {lang === "jp" ? SWEETNESS_LABELS[best.sweetness].jp : SWEETNESS_LABELS[best.sweetness].en}
+            </div>
+
+            {/* Flavor tags */}
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {best.tags.map((tag) => {
+                const label = TAG_LABELS[tag];
+                return (
+                  <span
+                    key={tag}
+                    className="rounded-full px-2 py-0.5 text-[11px] border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80"
+                  >
+                    {label ? (lang === "jp" ? label.jp : label.en) : tag}
+                  </span>
+                );
+              })}
+            </div>
+
+            {/* Vibes */}
+            <div className="flex flex-wrap gap-1.5">
+              {best.vibes.map((vibe) => {
+                const label = VIBE_LABELS[vibe];
+                return (
+                  <span
+                    key={vibe}
+                    className="rounded-full px-2 py-0.5 text-[11px] border border-violet-400/20 bg-violet-500/10 text-violet-300/80"
+                  >
+                    {label ? (lang === "jp" ? label.jp : label.en) : vibe}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </motion.div>
