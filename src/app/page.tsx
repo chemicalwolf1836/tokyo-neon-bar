@@ -1,5 +1,9 @@
 "use client";
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
+import DrinkModal from "@/app/components/DrinkModal";
+import { MENU_ITEMS } from "@/app/data/menu";
+import type { MenuItem } from "@/app/data/menu";
+import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -305,6 +309,7 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const [selectedDrink, setSelectedDrink] = useState<{ item: MenuItem; icon: LucideIcon } | null>(null);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -602,7 +607,8 @@ if (Object.keys(nextErrors).length > 0) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01]"
+              onClick={() => setSelectedDrink({ item: MENU_ITEMS[i], icon: Icon })}
+              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
@@ -1015,6 +1021,13 @@ if (Object.keys(nextErrors).length > 0) {
           </motion.button>
         )}
       </AnimatePresence>
+
+      <DrinkModal
+        item={selectedDrink?.item ?? null}
+        icon={selectedDrink?.icon ?? null}
+        lang={lang}
+        onClose={() => setSelectedDrink(null)}
+      />
     </main>
   );
 }
