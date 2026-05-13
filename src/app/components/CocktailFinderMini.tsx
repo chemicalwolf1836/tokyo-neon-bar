@@ -86,7 +86,9 @@ const TAG_LABELS: Record<string, { en: string; jp: string }> = {
   spice: { en: "Spice", jp: "スパイス" },
   lime: { en: "Lime", jp: "ライム" },
   coffee: { en: "Coffee", jp: "コーヒー" },
-  cocoa: { en: "Cocoa", jp: "ココア" }
+  cocoa: { en: "Cocoa", jp: "ココア" },
+  strong: { en: "Strong", jp: "強め" },
+  dessert: { en: "Dessert", jp: "デザート系" },
 };
 
 const BASE_LABELS = {
