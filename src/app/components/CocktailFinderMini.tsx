@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { GlassWater, Flower2, Moon, Coffee, type LucideIcon } from "lucide-react";
 import { MENU_ITEMS } from "@/app/data/menu";
 
 type Mood = "after-work" | "chill" | "romantic" | "party";
@@ -100,6 +101,8 @@ const SWEETNESS_LABELS = {
   balanced: { en: "Balanced", jp: "バランス" },
   sweet: { en: "Sweet", jp: "甘め" },
 };
+
+const MENU_ICONS: LucideIcon[] = [GlassWater, Flower2, Moon, Coffee];
 
 
 
@@ -215,7 +218,16 @@ export default function CocktailFinderMini({
           className="mt-4 neon-ring glow-border rounded-2xl bg-black/30 p-4"
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
+            <div className="flex items-start gap-2.5 flex-1 min-w-0">
+              {(() => {
+                const Icon = MENU_ICONS[MENU_ITEMS.indexOf(best)] ?? GlassWater;
+                return (
+                  <div className="rounded-lg p-1.5 bg-white/5 text-white/40 shrink-0 mt-0.5">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                );
+              })()}
+              <div className="flex-1 min-w-0">
               <div className="font-semibold text-white">
                 {lang === "jp" ? best.name.jp : best.name.en}
               </div>
@@ -240,6 +252,7 @@ export default function CocktailFinderMini({
                   );
                 })}
               </div>
+            </div>
             </div>
             <div className="shrink-0 text-sm font-semibold neon-price">
               ¥{best.priceYen.toLocaleString("ja-JP")}
