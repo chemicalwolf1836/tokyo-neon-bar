@@ -140,52 +140,65 @@ export default function CocktailFinderMini({
         <div className="text-xs text-white/50 border border-white/10 rounded-full px-2 py-0.5">{t.bestMatch}</div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <label className="text-xs text-white/70">
-          {t.mood}
-          <select
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/25 transition"
-            value={mood}
-            onChange={(e) => setMood(e.target.value as Mood)}
-          >
+      <div className="space-y-4">
+        {/* Mood toggles */}
+        <div>
+          <p className="text-xs text-white/60 mb-2">{t.mood}</p>
+          <div className="flex flex-wrap gap-2">
             {MOOD_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setMood(opt.value)}
+                className={`rounded-full px-3 py-1.5 text-xs transition border ${
+                  mood === opt.value
+                    ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-200"
+                    : "border-white/10 bg-white/5 text-white/55 hover:border-white/20 hover:text-white/80"
+                }`}
+              >
                 {lang === "jp" ? opt.jp : opt.en}
-              </option>
+              </button>
             ))}
-          </select>
-        </label>
+          </div>
+        </div>
 
-        <label className="text-xs text-white/70">
-          {t.sweetness}
-          <select
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-white/25 transition"
-            value={sweetness}
-            onChange={(e) => setSweetness(e.target.value as Sweetness)}
-          >
+        {/* Sweetness toggles */}
+        <div>
+          <p className="text-xs text-white/60 mb-2">{t.sweetness}</p>
+          <div className="flex flex-wrap gap-2">
             {SWEETNESS_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setSweetness(opt.value)}
+                className={`rounded-full px-3 py-1.5 text-xs transition border ${
+                  sweetness === opt.value
+                    ? "border-violet-400/40 bg-violet-500/15 text-violet-200"
+                    : "border-white/10 bg-white/5 text-white/55 hover:border-white/20 hover:text-white/80"
+                }`}
+              >
                 {lang === "jp" ? opt.jp : opt.en}
-              </option>
+              </button>
             ))}
-          </select>
-        </label>
+          </div>
+        </div>
 
-        <label className="text-xs text-white/70">
-          {t.likes}
+        {/* Likes input */}
+        <div>
+          <p className="text-xs text-white/60 mb-2">{t.likes}</p>
           <input
-            className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25 transition"
+            className="w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/25 transition"
             placeholder={lang === "jp" ? "柑橘系、フローラル" : "citrus, floral"}
             value={likesText}
             onChange={(e) => setLikesText(e.target.value)}
           />
-        </label>
+        </div>
       </div>
 
-      <label className="mt-3 block text-xs text-white/70">
+      <label className="mt-1 block text-xs text-white/60">
         {t.avoid}
         <input
-          className="mt-1 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/40 outline-none focus:border-white/25 transition"
+          className="mt-2 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/25 transition"
           placeholder={lang === "jp" ? "苦味、スモーキー" : "bitter, smoky"}
           value={avoidText}
           onChange={(e) => setAvoidText(e.target.value)}
