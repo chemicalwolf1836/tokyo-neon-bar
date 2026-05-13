@@ -23,7 +23,6 @@ html {
 body {
   background: #050508; /* clean dark base */
   color: white;
-  font-family: var(--font-body), var(--font-jp), sans-serif;
 }
 
 .neon-ring {
