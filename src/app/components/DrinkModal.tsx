@@ -90,9 +90,12 @@ export default function DrinkModal({
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="glow-border neon-ring rounded-2xl bg-[#050508] w-full max-w-md p-6 pointer-events-auto"
+              className="glow-border neon-ring rounded-2xl bg-[#0d0c18] w-full max-w-md pointer-events-auto overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Top neon accent border */}
+              <div className="h-px w-full bg-gradient-to-r from-cyan-400/60 via-violet-400/40 to-transparent" />
+              <div className="p-6">
               {/* Header */}
               <div className="flex items-start justify-between gap-3 mb-5">
                 <div className="flex items-center gap-3">
@@ -113,7 +116,7 @@ export default function DrinkModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="text-white/40 hover:text-white transition p-1 shrink-0"
+                  className="text-white/60 hover:text-white transition p-1 shrink-0"
                   aria-label="Close"
                 >
                   <X className="h-5 w-5" />
@@ -133,10 +136,10 @@ export default function DrinkModal({
                 <span className="neon-price text-xl font-semibold">
                   ¥{item.priceYen.toLocaleString("ja-JP")}
                 </span>
-                <span className="rounded-full px-2.5 py-1 text-xs border border-white/10 bg-white/5 text-white/60">
+                <span className="rounded-full px-2.5 py-1 text-xs border border-white/20 bg-white/10 text-white/80">
                   {lang === "jp" ? BASE_LABELS[item.base].jp : BASE_LABELS[item.base].en}
                 </span>
-                <span className="rounded-full px-2.5 py-1 text-xs border border-white/10 bg-white/5 text-white/60">
+                <span className="rounded-full px-2.5 py-1 text-xs border border-white/20 bg-white/10 text-white/80">
                   {lang === "jp" ? SWEETNESS_LABELS[item.sweetness].jp : SWEETNESS_LABELS[item.sweetness].en}
                 </span>
               </div>
@@ -182,13 +185,17 @@ export default function DrinkModal({
               </div>
 
               {/* CTA */}
-              <a
-                href="#reserve"
-                onClick={onClose}
-                className="neon-ring w-full inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm bg-cyan-500/10 border border-cyan-400/25 text-cyan-100 hover:bg-cyan-500/20 transition"
-              >
-                {lang === "jp" ? "このお席を予約する" : "Reserve a table"} <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="flex justify-center">
+                <a
+                  href="#reserve"
+                  onClick={onClose}
+                  className="neon-ring inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm bg-cyan-500/15 border border-cyan-400/35 text-cyan-100 hover:bg-cyan-500/25 transition"
+                  style={{ boxShadow: "0 0 18px rgba(0,229,255,0.18), 0 0 6px rgba(0,229,255,0.12)" }}
+                >
+                  {lang === "jp" ? "このお席を予約する" : "Reserve a table"} <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
             </div>
           </motion.div>
         </>
