@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Space_Mono, Zen_Kaku_Gothic_New } from "next/font/google";
+import { Space_Grotesk, Space_Mono, M_PLUS_1_Code } from "next/font/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -15,7 +15,7 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
-const zenKaku = Zen_Kaku_Gothic_New({
+const mplus1Code = M_PLUS_1_Code({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-jp",
@@ -39,7 +39,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} ${spaceMono.variable} ${zenKaku.variable} font-[var(--font-body)]`}>{children}</body>
+      <body className={`${spaceGrotesk.variable} ${spaceMono.variable} ${mplus1Code.variable} font-[var(--font-body)]`}>{children}</body>
     </html>
   );
 }
