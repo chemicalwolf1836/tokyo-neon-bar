@@ -28,22 +28,22 @@ body {
 .neon-ring {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-    0 0 18px rgba(0, 229, 255, 0.18),
-    0 0 28px rgba(255, 0, 153, 0.12);
+    0 0 18px rgb(var(--neonA) / 0.18),
+    0 0 28px rgb(var(--neonB) / 0.12);
 }
 
 .neon-text {
   text-shadow:
-    0 0 8px rgba(0, 229, 255, 0.55),
-    0 0 20px rgba(0, 229, 255, 0.30),
-    0 0 38px rgba(255, 0, 153, 0.22);
+    0 0 8px rgb(var(--neonA) / 0.55),
+    0 0 20px rgb(var(--neonA) / 0.30),
+    0 0 38px rgb(var(--neonB) / 0.22);
 }
 
 .neon-price {
   color: rgb(var(--neonA));
   text-shadow:
-    0 0 8px rgba(0, 229, 255, 0.50),
-    0 0 18px rgba(0, 229, 255, 0.25);
+    0 0 8px rgb(var(--neonA) / 0.50),
+    0 0 18px rgb(var(--neonA) / 0.25);
 }
 
 .neon-line {
@@ -82,8 +82,8 @@ body {
 
 .glow-border:hover {
   box-shadow:
-    0 0 0 1px rgba(var(--neonA), 0.14),
-    0 0 26px rgba(var(--neonC), 0.12);
+    0 0 0 1px rgb(var(--neonA) / 0.14),
+    0 0 26px rgb(var(--neonC) / 0.12);
 }
 
 body::before {
@@ -99,4 +99,58 @@ body::before {
     radial-gradient(900px 600px at 85% 30%, rgba(217, 70, 239, 0.20), transparent 60%),
     radial-gradient(900px 700px at 55% 80%, rgba(59, 130, 246, 0.10), transparent 65%);
   filter: blur(18px);
+}
+
+/* ── Blue Hour theme ── */
+[data-theme="blue"] {
+  --bg: 4 13 26;
+  --panel: 7 20 40;
+  --text: 232 238 255;
+  --muted: 136 153 204;
+  --neonA: 0 221 255;
+  --neonB: 255 0 153;
+  --neonC: 170 102 255;
+}
+[data-theme="blue"] body { background: #040d1a; }
+[data-theme="blue"] body::before {
+  background:
+    radial-gradient(900px 600px at 15% 25%, rgba(16, 80, 185, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(150, 50, 250, 0.22), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(0, 100, 220, 0.14), transparent 65%);
+}
+
+/* ── Amber Night theme ── */
+[data-theme="amber"] {
+  --bg: 15 10 8;
+  --panel: 26 18 14;
+  --text: 240 235 229;
+  --muted: 170 153 136;
+  --neonA: 255 170 0;
+  --neonB: 255 68 102;
+  --neonC: 204 136 255;
+}
+[data-theme="amber"] body { background: #0f0a08; }
+[data-theme="amber"] body::before {
+  background:
+    radial-gradient(900px 600px at 15% 25%, rgba(220, 130, 0, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(220, 50, 80, 0.22), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(180, 100, 0, 0.12), transparent 65%);
+}
+
+/* ── Dusk theme (soft purple-dark) ── */
+[data-theme="dusk"] {
+  --bg: 28 22 42;
+  --panel: 38 30 58;
+  --text: 245 240 255;
+  --muted: 175 160 210;
+  --neonA: 180 140 255;
+  --neonB: 255 120 200;
+  --neonC: 130 200 255;
+}
+[data-theme="dusk"] body { background: #1c162a; }
+[data-theme="dusk"] body::before {
+  background:
+    radial-gradient(900px 600px at 15% 25%, rgba(120, 80, 220, 0.24), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(220, 80, 160, 0.20), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(80, 130, 255, 0.10), transparent 65%);
 }
