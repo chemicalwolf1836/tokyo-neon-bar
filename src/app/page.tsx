@@ -25,6 +25,7 @@ import {
   Globe,
   Star,
   CreditCard,
+  CheckCircle,
 } from "lucide-react";
 
 type Lang = "en" | "jp";
@@ -85,6 +86,7 @@ finder: {
       },
       button: "Send Request",
       hint: "For demo: this form doesn’t send yet — we can connect it to email next.",
+      successMsg: "We’ll be in touch shortly to confirm your reservation.",
     },
     access: {
       title: "Access",
@@ -185,6 +187,7 @@ finder: {
       },
       button: "送信",
       hint: "デモ：送信機能は未接続（次にメール連携できます）。",
+      successMsg: "まもなくご予約の確認ご連絡をお送りします。",
     },
     access: {
       title: "アクセス",
@@ -299,6 +302,18 @@ function StatusBanner({
   return <div className={`${base} ${styles}`}>{children}</div>;
 }
 
+function validateField(name: string, value: string, lang: Lang): string {
+  const today = new Date().toISOString().split("T")[0];
+  switch (name) {
+    case "name":   return value.trim().length < 2 ? (lang === "jp" ? "お名前を入力してください" : "Name is required") : "";
+    case "email":  return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? (lang === "jp" ? "有効なメールを入力してください" : "Valid email required") : "";
+    case "date":   return !value ? (lang === "jp" ? "日付を選んでください" : "Date required") : value < today ? (lang === "jp" ? "過去の日付は選べません" : "Pick a future date") : "";
+    case "time":   return !value ? (lang === "jp" ? "時間を選んでください" : "Time required") : "";
+    case "guests": { const n = parseInt(value); return isNaN(n) || n < 1 || n > 12 ? (lang === "jp" ? "1〜12名で入力してください" : "Enter 1–12 guests") : ""; }
+    default:       return "";
+  }
+}
+
 export default function Page() {
   const [lang, setLang] = useState<Lang>("en");
   const [submitted, setSubmitted] = useState(false);
@@ -352,11 +367,10 @@ async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
   };
 
   const nextErrors: Record<string, string> = {};
-if (!payload.name) nextErrors.name = "Name is required.";
-if (!payload.email) nextErrors.email = "Email is required.";
-if (!payload.date) nextErrors.date = "Date is required.";
-if (!payload.time) nextErrors.time = "Time is required.";
-if (!payload.guests) nextErrors.guests = "Guests is required.";
+  for (const field of ["name", "email", "date", "time", "guests"] as const) {
+    const err = validateField(field, payload[field], lang);
+    if (err) nextErrors[field] = err;
+  }
 
 if (Object.keys(nextErrors).length > 0) {
   setFieldErrors(nextErrors);
@@ -693,143 +707,152 @@ if (Object.keys(nextErrors).length > 0) {
       <Section id="reserve" title={t.reserve.title} subtitle={t.reserve.subtitle}>
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5">
-            <form
-             onSubmit={handleReserveSubmit}
-             className="space-y-3"
-             >
+            <AnimatePresence mode="wait">
+              {reserveStatus === "success" ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95, y: 16 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="py-8 text-center"
+                >
+                  <div className="mb-5 flex justify-center">
+                    <div className="rounded-full p-3 bg-cyan-500/15 border border-cyan-400/30">
+                      <CheckCircle className="h-8 w-8 text-cyan-300" />
+                    </div>
+                  </div>
+                  <h3 className="neon-text font-semibold text-lg mb-2">
+                    {lang === "jp" ? "予約リクエストを送信しました" : "Request Sent"}
+                  </h3>
+                  <p className="text-sm text-white/60 mb-6">{t.reserve.successMsg}</p>
+                  <button
+                    onClick={() => setReserveStatus("idle")}
+                    className="text-xs text-white/40 hover:text-white/70 transition border border-white/10 rounded-full px-4 py-1.5"
+                  >
+                    {lang === "jp" ? "別の予約をする" : "Make another reservation"}
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  onSubmit={handleReserveSubmit}
+                  className="space-y-3"
+                >
+                  {/* Honeypot (anti-spam): humans won’t see this */}
+                  <div className="hidden">
+                    <label>
+                      Company
+                      <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+                    </label>
+                  </div>
 
-             {/* Honeypot (anti-spam): humans won't see this */}
-              <div className="hidden">
-              <label>
-               Company
-               <input
-               type="text"
-               name="company"
-               tabIndex={-1}
-               autoComplete="off"
-                />
-               </label>
-               </div>
+                  <fieldset
+                    disabled={reserveStatus === "loading"}
+                    className="space-y-3 disabled:opacity-80 disabled:cursor-not-allowed"
+                  >
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <label className="text-sm">
+                        <span className="text-white/80">{t.reserve.fields.name}</span>
+                        <input
+                          name="name"
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white placeholder:text-white/30 border ${fieldErrors.name ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          required
+                          onBlur={(e) => setFieldErrors(prev => ({ ...prev, name: validateField("name", e.target.value, lang) }))}
+                        />
+                        {fieldErrors.name && <p className="mt-1 text-xs text-pink-400/80">{fieldErrors.name}</p>}
+                      </label>
+                      <label className="text-sm">
+                        <span className="text-white/80">{t.reserve.fields.email}</span>
+                        <input
+                          name="email"
+                          type="email"
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white placeholder:text-white/30 border ${fieldErrors.email ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          required
+                          onBlur={(e) => setFieldErrors(prev => ({ ...prev, email: validateField("email", e.target.value, lang) }))}
+                        />
+                        {fieldErrors.email && <p className="mt-1 text-xs text-pink-400/80">{fieldErrors.email}</p>}
+                      </label>
+                    </div>
 
-              <fieldset
-              disabled={reserveStatus === "loading"}
-              className="space-y-3 disabled:opacity-80 disabled:cursor-not-allowed"
-              >
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <label className="text-sm">
+                        <span className="text-white/80">{t.reserve.fields.date}</span>
+                        <input
+                          name="date"
+                          type="date"
+                          min={new Date().toISOString().split("T")[0]}
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border ${fieldErrors.date ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          required
+                          onBlur={(e) => setFieldErrors(prev => ({ ...prev, date: validateField("date", e.target.value, lang) }))}
+                        />
+                        {fieldErrors.date && <p className="mt-1 text-xs text-pink-400/80">{fieldErrors.date}</p>}
+                      </label>
+                      <label className="text-sm">
+                        <span className="text-white/80">{t.reserve.fields.time}</span>
+                        <input
+                          name="time"
+                          type="time"
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border ${fieldErrors.time ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          required
+                          onBlur={(e) => setFieldErrors(prev => ({ ...prev, time: validateField("time", e.target.value, lang) }))}
+                        />
+                        {fieldErrors.time && <p className="mt-1 text-xs text-pink-400/80">{fieldErrors.time}</p>}
+                      </label>
+                      <label className="text-sm">
+                        <span className="text-white/80">{t.reserve.fields.guests}</span>
+                        <input
+                          name="guests"
+                          type="number"
+                          min={1}
+                          max={12}
+                          defaultValue={2}
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border ${fieldErrors.guests ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          required
+                          onBlur={(e) => setFieldErrors(prev => ({ ...prev, guests: validateField("guests", e.target.value, lang) }))}
+                        />
+                        {fieldErrors.guests && <p className="mt-1 text-xs text-pink-400/80">{fieldErrors.guests}</p>}
+                      </label>
+                    </div>
 
-              <div className="grid sm:grid-cols-2 gap-3">
-                <label className="text-sm">
-                  <span className="text-white/80">{t.reserve.fields.name}</span>
-                  <input
-                    name="name"
-                    className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                    required
-                  />
-                  {fieldErrors.name && (
-                   <p className="mt-1 text-xs text-red-300">{fieldErrors.name}</p>
-                   )}
-                </label>
-                <label className="text-sm">
-                  <span className="text-white/80">{t.reserve.fields.email}</span>
-                  <input
-                    name="email"
-                    type="email"
-                    className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                    required
-                  />
-                  {fieldErrors.email && (
-                  <p className="mt-1 text-xs text-red-300">{fieldErrors.email}</p>
-                   )}
-                </label>
-              </div>
+                    <label className="text-sm block">
+                      <span className="text-white/80">{t.reserve.fields.message}</span>
+                      <textarea
+                        rows={4}
+                        name="message"
+                        className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none transition text-sm text-white placeholder:text-white/30 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"
+                      />
+                    </label>
 
-              <div className="grid sm:grid-cols-3 gap-3">
-                <label className="text-sm">
-                  <span className="text-white/80">{t.reserve.fields.date}</span>
-                  <input
-                    name="date"
-                    type="date"
-                    min={new Date().toISOString().split("T")[0]}
-                    className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                    required
-                  />
-                  {fieldErrors.date && (
-                   <p className="mt-1 text-xs text-red-300">{fieldErrors.date}</p>
-                   )}
-                </label>
-                <label className="text-sm">
-                  <span className="text-white/80">{t.reserve.fields.time}</span>
-                  <input
-                    name="time"
-                    type="time"
-                    className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                    required
-                  />
-                  {fieldErrors.time && (
-                   <p className="mt-1 text-xs text-red-300">{fieldErrors.time}</p>
-                   )}
-                </label>
-                <label className="text-sm">
-                  <span className="text-white/80">{t.reserve.fields.guests}</span>
-                  <input
-                    name="guests"
-                    type="number"
-                    min={1}
-                    max={12}
-                    defaultValue={2}
-                    className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                    required
-                  />
-                  {fieldErrors.guests && (
-                   <p className="mt-1 text-xs text-red-300">{fieldErrors.guests}</p>
-                   )}
-                </label>
-              </div>
+                    <button
+                      type="submit"
+                      disabled={reserveStatus === "loading"}
+                      className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                    >
+                      {reserveStatus === "loading" && <Spinner />}
+                      {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
+                    </button>
+                  </fieldset>
 
-              <label className="text-sm block">
-                <span className="text-white/80">{t.reserve.fields.message}</span>
-                <textarea
-                  rows={4}
-                  name="message"
-                  className="mt-1 w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2 outline-none focus:border-white/25"
-                />
-              </label>
+                  {reserveStatus === "idle" && (
+                    <p className="text-xs text-white/55">{t.reserve.hint}</p>
+                  )}
 
-              <button
-              type="submit"
-              disabled={reserveStatus === "loading"}
-              className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
-              >
-             {reserveStatus === "loading" && <Spinner />}
-             {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
-             </button>
-             </fieldset>
-
-            {/* Status messages can stay OUTSIDE fieldset so they still render */}
-            {reserveStatus === "idle" && (
-            <p className="text-xs text-white/55">{t.reserve.hint}</p>
-            )}
-
-           {reserveStatus === "success" && (
-           <div className="animate-[fadeIn_250ms_ease-out]">
-           <StatusBanner variant="success">
-             <span className="shrink-0">✅</span>
-             <span className="animate-[pulseGlow_900ms_ease-in-out_1]">
-              Request sent. We’ll contact you shortly.
-             </span>
-          </StatusBanner>
-         </div>
-         )}
-
-         {reserveStatus === "error" && (
-          <div className="animate-[fadeIn_250ms_ease-out]">
-           <StatusBanner variant="error">
-             <span className="shrink-0">❌</span>
-             <span>{reserveError || "Something went wrong."}</span>
-           </StatusBanner>
-           </div>
-           )}
-
-            </form>
+                  {reserveStatus === "error" && (
+                    <div className="animate-[fadeIn_250ms_ease-out]">
+                      <StatusBanner variant="error">
+                        <span className="shrink-0">❌</span>
+                        <span>{reserveError || "Something went wrong."}</span>
+                      </StatusBanner>
+                    </div>
+                  )}
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="glow-border neon-ring rounded-2xl p-5 bg-white/5 transition-transform duration-300 hover:scale-[1.01]">
