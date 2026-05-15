@@ -119,38 +119,74 @@ body::before {
     radial-gradient(900px 700px at 55% 80%, rgba(0, 100, 220, 0.14), transparent 65%);
 }
 
-/* ── Amber Night theme ── */
-[data-theme="amber"] {
-  --bg: 15 10 8;
-  --panel: 26 18 14;
-  --text: 240 235 229;
-  --muted: 170 153 136;
-  --neonA: 255 170 0;
-  --neonB: 255 68 102;
-  --neonC: 204 136 255;
+/* ── Emerald theme ── */
+[data-theme="emerald"] {
+  --bg: 6 15 8;
+  --panel: 10 22 12;
+  --text: 230 255 240;
+  --muted: 120 180 140;
+  --neonA: 0 255 128;
+  --neonB: 0 204 255;
+  --neonC: 128 255 204;
 }
-[data-theme="amber"] body { background: #0f0a08; }
-[data-theme="amber"] body::before {
+[data-theme="emerald"] body { background: #060f08; }
+[data-theme="emerald"] body::before {
   background:
-    radial-gradient(900px 600px at 15% 25%, rgba(220, 130, 0, 0.28), transparent 60%),
-    radial-gradient(900px 600px at 85% 30%, rgba(220, 50, 80, 0.22), transparent 60%),
-    radial-gradient(900px 700px at 55% 80%, rgba(180, 100, 0, 0.12), transparent 65%);
+    radial-gradient(900px 600px at 15% 25%, rgba(0, 200, 80, 0.25), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(0, 150, 220, 0.20), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(0, 180, 100, 0.12), transparent 65%);
 }
 
-/* ── Dusk theme (soft purple-dark) ── */
-[data-theme="dusk"] {
-  --bg: 28 22 42;
-  --panel: 38 30 58;
-  --text: 245 240 255;
-  --muted: 175 160 210;
-  --neonA: 180 140 255;
-  --neonB: 255 120 200;
-  --neonC: 130 200 255;
+/* ── Crimson theme ── */
+[data-theme="crimson"] {
+  --bg: 17 6 6;
+  --panel: 28 10 10;
+  --text: 255 240 238;
+  --muted: 180 140 138;
+  --neonA: 255 34 68;
+  --neonB: 255 187 0;
+  --neonC: 204 68 255;
 }
-[data-theme="dusk"] body { background: #1c162a; }
-[data-theme="dusk"] body::before {
+[data-theme="crimson"] body { background: #110606; }
+[data-theme="crimson"] body::before {
   background:
-    radial-gradient(900px 600px at 15% 25%, rgba(120, 80, 220, 0.24), transparent 60%),
-    radial-gradient(900px 600px at 85% 30%, rgba(220, 80, 160, 0.20), transparent 60%),
-    radial-gradient(900px 700px at 55% 80%, rgba(80, 130, 255, 0.10), transparent 65%);
+    radial-gradient(900px 600px at 15% 25%, rgba(220, 30, 60, 0.28), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(200, 150, 0, 0.20), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(180, 20, 40, 0.12), transparent 65%);
+}
+
+/* ── Teal theme ── */
+[data-theme="teal"] {
+  --bg: 4 20 18;
+  --panel: 6 30 26;
+  --text: 220 255 252;
+  --muted: 110 170 165;
+  --neonA: 0 221 200;
+  --neonB: 128 255 238;
+  --neonC: 68 136 255;
+}
+[data-theme="teal"] body { background: #041412; }
+[data-theme="teal"] body::before {
+  background:
+    radial-gradient(900px 600px at 15% 25%, rgba(0, 180, 160, 0.26), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(0, 100, 220, 0.20), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(0, 160, 140, 0.12), transparent 65%);
+}
+
+/* ── Gold theme ── */
+[data-theme="gold"] {
+  --bg: 15 12 6;
+  --panel: 24 20 10;
+  --text: 255 248 230;
+  --muted: 175 160 120;
+  --neonA: 221 187 68;
+  --neonB: 255 221 170;
+  --neonC: 204 136 255;
+}
+[data-theme="gold"] body { background: #0f0c06; }
+[data-theme="gold"] body::before {
+  background:
+    radial-gradient(900px 600px at 15% 25%, rgba(200, 160, 40, 0.26), transparent 60%),
+    radial-gradient(900px 600px at 85% 30%, rgba(180, 100, 20, 0.20), transparent 60%),
+    radial-gradient(900px 700px at 55% 80%, rgba(160, 130, 20, 0.12), transparent 65%);
 }

@@ -99,17 +99,6 @@ finder: {
       mapNote:
         "Replace the map embed with your real location once you have the client.",
     },
-    faq: {
-      title: "FAQ",
-      subtitle: "Common questions from guests.",
-      items: [
-        { q: "Do you speak English?", a: "Yes — our staff are English-friendly and menus are fully bilingual." },
-        { q: "Is there a cover charge?", a: "No cover charge. You only pay for what you order." },
-        { q: "Do you accept cashless payment?", a: "Yes, we accept major credit cards and IC cards." },
-        { q: "Can I walk in without a reservation?", a: "Walk-ins are always welcome, though reservations are recommended on weekends." },
-        { q: "Can I book for a private event?", a: "Yes — contact us to discuss private hire and group reservations." },
-      ],
-    },
     about: {
       title: "About",
       subtitle:
@@ -209,17 +198,6 @@ finder: {
       phone: "+81 00-0000-0000",
       email: "hello@neonkissa.jp",
       mapNote: "実案件ではGoogleマップ埋め込みを実住所に差し替えます。",
-    },
-    faq: {
-      title: "よくある質問",
-      subtitle: "お客様からよくいただくご質問をまとめました。",
-      items: [
-        { q: "英語は通じますか？", a: "はい。英語対応可能なスタッフが対応します。メニューも日英二言語です。" },
-        { q: "チャージはありますか？", a: "チャージはありません。ご注文いただいたものだけのお支払いです。" },
-        { q: "キャッシュレス払いは使えますか？", a: "はい。主要クレジットカードおよびICカードをご利用いただけます。" },
-        { q: "予約なしで来店できますか？", a: "ウォークインも大歓迎です。週末はご予約をお勧めします。" },
-        { q: "貸し切りやグループ予約はできますか？", a: "はい。プライベートイベントや大人数のご予約はお気軽にご相談ください。" },
-      ],
     },
     about: {
       title: "紹介",
@@ -326,10 +304,12 @@ function StatusBanner({
 }
 
 const THEMES = [
-  { key: "dark",  label: "Dark",        swatch: "#3a3844" },
-  { key: "blue",  label: "Blue Hour",   swatch: "#1a5aaa" },
-  { key: "amber", label: "Amber Night", swatch: "#e08000" },
-  { key: "dusk",  label: "Dusk",        swatch: "#9955ee" },
+  { key: "dark",    label: "Dark",      swatch: "#3a3844" },
+  { key: "blue",    label: "Blue Hour", swatch: "#1a5aaa" },
+  { key: "emerald", label: "Emerald",   swatch: "#00cc66" },
+  { key: "crimson", label: "Crimson",   swatch: "#cc1133" },
+  { key: "teal",    label: "Teal",      swatch: "#00aa99" },
+  { key: "gold",    label: "Gold",      swatch: "#ccaa33" },
 ] as const;
 type Theme = typeof THEMES[number]["key"];
 
@@ -364,7 +344,6 @@ export default function Page() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [theme, setTheme] = useState<Theme>("dark");
   const [themeOpen, setThemeOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -1082,46 +1061,6 @@ if (Object.keys(nextErrors).length > 0) {
     </a>
   </div>
 </div>
-        </div>
-      </Section>
-
-      <Section id="faq" title={t.faq.title} subtitle={t.faq.subtitle}>
-        <div className="space-y-2 max-w-2xl">
-          {t.faq.items.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="glow-border rounded-xl overflow-hidden"
-            >
-              <button
-                type="button"
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left bg-white/5 hover:bg-white/[0.08] transition"
-              >
-                <span className="text-sm font-medium text-white/90">{item.q}</span>
-                <span className={`text-white/50 text-xl shrink-0 transition-transform duration-200 leading-none ${openFaq === i ? "rotate-45" : ""}`}>+</span>
-              </button>
-              <AnimatePresence initial={false}>
-                {openFaq === i && (
-                  <motion.div
-                    key="answer"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                    style={{ overflow: "hidden" }}
-                  >
-                    <p className="px-5 py-4 text-sm text-[rgb(var(--muted))] border-t border-white/[0.08] bg-black/20">
-                      {item.a}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
         </div>
       </Section>
 
