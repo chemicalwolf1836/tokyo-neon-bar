@@ -1,6 +1,7 @@
 "use client";
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
+import GalleryLightbox from "@/app/components/GalleryLightbox";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
@@ -302,6 +303,11 @@ function StatusBanner({
   return <div className={`${base} ${styles}`}>{children}</div>;
 }
 
+const GALLERY = [
+  { src: "/images/gallery-1.jpg", alt: "Neon skyline vibe" },
+  { src: "/images/gallery-2.jpg", alt: "Tokyo neon architecture" },
+];
+
 function validateField(name: string, value: string, lang: Lang): string {
   const today = new Date().toISOString().split("T")[0];
   switch (name) {
@@ -325,6 +331,7 @@ export default function Page() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [selectedDrink, setSelectedDrink] = useState<{ item: MenuItem; icon: LucideIcon } | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -665,7 +672,8 @@ if (Object.keys(nextErrors).length > 0) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
-      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
+      onClick={() => setLightboxIndex(0)}
     >
       <div className="relative aspect-[16/10]">
         <Image
@@ -686,7 +694,8 @@ if (Object.keys(nextErrors).length > 0) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5, delay: 0.05 }}
-      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01]"
+      className="glow-border neon-ring rounded-2xl overflow-hidden bg-white/5 transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
+      onClick={() => setLightboxIndex(1)}
     >
       <div className="relative aspect-[16/10]">
         <Image
@@ -1050,6 +1059,12 @@ if (Object.keys(nextErrors).length > 0) {
         icon={selectedDrink?.icon ?? null}
         lang={lang}
         onClose={() => setSelectedDrink(null)}
+      />
+      <GalleryLightbox
+        images={GALLERY}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onChange={setLightboxIndex}
       />
     </main>
   );
