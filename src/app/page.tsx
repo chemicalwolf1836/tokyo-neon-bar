@@ -86,7 +86,7 @@ finder: {
         message: "Message (optional)",
       },
       button: "Send Request",
-      hint: "For demo: this form doesn’t send yet — we can connect it to email next.",
+      hint: "We respond to all requests within 24 hours.",
       successMsg: "We’ll be in touch shortly to confirm your reservation.",
     },
     access: {
@@ -187,7 +187,7 @@ finder: {
         message: "メッセージ（任意）",
       },
       button: "送信",
-      hint: "デモ：送信機能は未接続（次にメール連携できます）。",
+      hint: "ご予約リクエストには24時間以内に返信します。",
       successMsg: "まもなくご予約の確認ご連絡をお送りします。",
     },
     access: {
@@ -377,6 +377,16 @@ export default function Page() {
   }, [theme]);
 
   useEffect(() => {
+    const saved = localStorage.getItem("nk-lang") as Lang | null;
+    if (saved === "en" || saved === "jp") setLang(saved);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("nk-lang", lang);
+    document.documentElement.lang = lang === "jp" ? "ja" : "en";
+  }, [lang]);
+
+  useEffect(() => {
     if (!themeOpen) return;
     const close = (e: MouseEvent) => {
       if (!(e.target as Element).closest("[data-theme-picker]")) setThemeOpen(false);
@@ -507,6 +517,7 @@ if (Object.keys(nextErrors).length > 0) {
               onClick={() => setMenuOpen((p) => !p)}
               className="md:hidden p-1.5 text-white/70 hover:text-white transition"
               aria-label="Toggle menu"
+              aria-expanded={menuOpen}
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
