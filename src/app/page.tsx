@@ -2,7 +2,6 @@
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
-import NeonSign from "@/app/components/NeonSign";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
@@ -457,7 +456,7 @@ if (Object.keys(nextErrors).length > 0) {
 
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/30">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="neon-sign inline-flex items-center gap-2 rounded-xl px-3 py-1.5 bg-black/50 border border-white/10 neon-ring">
             <Sparkles className="h-5 w-5 text-white/80" />
             <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
               {t.brand}
@@ -569,9 +568,6 @@ if (Object.keys(nextErrors).length > 0) {
             </motion.p>
 
             <div className="neon-line mt-4 mb-1" />
-            <div className="mt-6 mb-4">
-              <NeonSign />
-            </div>
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
