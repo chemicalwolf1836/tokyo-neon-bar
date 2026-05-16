@@ -2,7 +2,6 @@
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
-import NeonSign from "@/app/components/NeonSign";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
@@ -569,9 +568,6 @@ if (Object.keys(nextErrors).length > 0) {
             </motion.p>
 
             <div className="neon-line mt-4 mb-1" />
-            <div className="mt-6 mb-2">
-              <NeonSign />
-            </div>
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
