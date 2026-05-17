@@ -543,7 +543,13 @@ if (Object.keys(nextErrors).length > 0) {
                   <a
                     key={href}
                     href={href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMenuOpen(false);
+                      setTimeout(() => {
+                        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+                      }, 250);
+                    }}
                     className={`py-2.5 text-sm border-b border-white/5 last:border-0 transition ${activeSection === id ? "text-cyan-300" : "text-white/75 hover:text-white"}`}
                   >
                     {label}
