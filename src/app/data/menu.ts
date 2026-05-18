@@ -25,7 +25,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 
   description: {
-    en: "Citrus, soda, smoked ice",
+    en: "citrus, soda, smoked ice",
     jp: "柑橘、ソーダ、スモークアイス"
   },
     priceYen: 1200,
@@ -41,7 +41,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   priceYen: 1600,
   description: {
-    en: "Gin, yuzu, tonic, floral bitters",
+    en: "gin, yuzu, tonic, floral bitters",
     jp: "ジン、ゆず、トニック、フローラルビターズ",
   },
   base: "gin",
@@ -56,7 +56,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   priceYen: 1400,
   description: {
-    en: "Umeshu, plum, spice, lime",
+    en: "umeshu, plum, spice, lime",
     jp: "梅酒、プラム、スパイス、ライム",
   },
     base: "umeshu",
@@ -71,7 +71,7 @@ export const MENU_ITEMS: MenuItem[] = [
     },
     priceYen: 1700,
     description: {
-      en: "Vodka, coffee, cocoa, velvet foam",
+      en: "vodka, coffee, cocoa, velvet foam",
       jp: "ウォッカ、コーヒー、ココア、ベルベットフォーム",
 },
     base: "vodka",

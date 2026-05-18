@@ -54,10 +54,10 @@ const copy = {
       title: "Signature Menu",
       subtitle: "Simple, readable, and mobile-first. Perfect for tourists.",
       items: [
-        { name: "Neon Highball", desc: "Citrus, soda, smoked ice", price: "¥1,200" },
-        { name: "Shinjuku Bloom", desc: "Gin, yuzu, tonic, floral bitters", price: "¥1,600" },
-        { name: "Midnight Ume", desc: "Umeshu, plum, spice, lime", price: "¥1,400" },
-        { name: "Cyber Espresso", desc: "Vodka, coffee, cocoa, velvet foam", price: "¥1,700" },
+        { name: "Neon Highball", desc: "citrus, soda, smoked ice", price: "¥1,200" },
+        { name: "Shinjuku Bloom", desc: "gin, yuzu, tonic, floral bitters", price: "¥1,600" },
+        { name: "Midnight Ume", desc: "umeshu, plum, spice, lime", price: "¥1,400" },
+        { name: "Cyber Espresso", desc: "vodka, coffee, cocoa, velvet foam", price: "¥1,700" },
       ],
 
       note: "Allergy info available on request.",
