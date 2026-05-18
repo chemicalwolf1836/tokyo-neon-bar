@@ -32,7 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
     base: "whiskey",
     sweetness: "balanced",
     vibes: ["after-work", "chill"],
-    tags: ["citrus", "sparkling", "refreshing", "light", "smoky"],
+    tags: ["sparkling", "refreshing", "smoky"],
   },
   {
   name: {
@@ -47,7 +47,7 @@ export const MENU_ITEMS: MenuItem[] = [
   base: "gin",
   sweetness: "balanced",
   vibes: ["romantic", "chill"],
-  tags: ["yuzu", "tonic", "floral", "citrus", "refreshing"],
+  tags: ["yuzu", "floral", "refreshing"],
 }
   ,{
   name: {
@@ -62,7 +62,7 @@ export const MENU_ITEMS: MenuItem[] = [
     base: "umeshu",
     sweetness: "sweet",
     vibes: ["after-work", "romantic", "chill"],
-    tags: ["plum", "umeshu", "smooth", "spice", "lime"],
+    tags: ["plum", "smooth", "spice"],
   },
   {
     name: {
@@ -77,6 +77,6 @@ export const MENU_ITEMS: MenuItem[] = [
     base: "vodka",
     sweetness: "balanced",
     vibes: ["after-work", "party"],
-    tags: ["coffee", "cocoa", "strong", "smooth", "dessert"],
+    tags: ["coffee", "smooth", "dessert"],
   },
 ];
