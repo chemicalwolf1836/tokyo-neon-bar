@@ -862,7 +862,7 @@ if (Object.keys(nextErrors).length > 0) {
                           name="date"
                           type="date"
                           min={new Date().toISOString().split("T")[0]}
-                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border ${fieldErrors.date ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border appearance-none [color-scheme:dark] ${fieldErrors.date ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
                           required
                           onBlur={(e) => setFieldErrors(prev => ({ ...prev, date: validateField("date", e.target.value, lang) }))}
                         />
@@ -873,7 +873,7 @@ if (Object.keys(nextErrors).length > 0) {
                         <input
                           name="time"
                           type="time"
-                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border ${fieldErrors.time ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
+                          className={`mt-1 w-full rounded-xl bg-black/40 px-3 py-2 outline-none transition text-sm text-white border appearance-none [color-scheme:dark] ${fieldErrors.time ? "border-pink-400/50 focus:border-pink-400/60 focus:shadow-[0_0_0_2px_rgba(255,0,153,0.10)]" : "border-white/10 focus:border-cyan-400/40 focus:shadow-[0_0_0_2px_rgba(0,229,255,0.10),0_0_12px_rgba(0,229,255,0.08)]"}`}
                           required
                           onBlur={(e) => setFieldErrors(prev => ({ ...prev, time: validateField("time", e.target.value, lang) }))}
                         />
