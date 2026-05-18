@@ -247,7 +247,7 @@ export default function CocktailFinderMini({
                   return (
                     <span
                       key={tag}
-                      className="rounded-full px-2 py-0.5 text-[11px] border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80"
+                      className="rounded-full px-2 py-0.5 text-[11px] border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80 lowercase"
                     >
                       {label ? (lang === "jp" ? label.jp : label.en) : tag}
                     </span>

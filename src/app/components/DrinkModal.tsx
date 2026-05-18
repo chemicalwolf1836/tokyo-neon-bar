@@ -156,7 +156,7 @@ export default function DrinkModal({
                     return (
                       <span
                         key={tag}
-                        className="rounded-full px-2.5 py-1 text-xs border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80"
+                        className="rounded-full px-2.5 py-1 text-xs border border-cyan-400/20 bg-cyan-500/10 text-cyan-300/80 lowercase"
                       >
                         {label ? (lang === "jp" ? label.jp : label.en) : tag}
                       </span>
@@ -176,7 +176,7 @@ export default function DrinkModal({
                     return (
                       <span
                         key={vibe}
-                        className="rounded-full px-2.5 py-1 text-xs border border-violet-400/20 bg-violet-500/10 text-violet-300/80"
+                        className="rounded-full px-2.5 py-1 text-xs border border-violet-400/20 bg-violet-500/10 text-violet-300/80 lowercase"
                       >
                         {label ? (lang === "jp" ? label.jp : label.en) : vibe}
                       </span>
