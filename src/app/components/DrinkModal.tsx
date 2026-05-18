@@ -133,17 +133,16 @@ export default function DrinkModal({
                 {lang === "jp" ? item.description.en : item.description.jp}
               </p>
 
-              {/* Price + badges */}
-              <div className="flex items-center gap-3 mb-5">
+              {/* Price */}
+              <div className="mb-5">
                 <span className="neon-price text-xl font-semibold">
                   ¥{item.priceYen.toLocaleString("ja-JP")}
                 </span>
-                <span className="rounded-full px-2.5 py-1 text-xs border border-white/20 bg-white/10 text-white/80">
+                <p className="mt-1 text-xs text-white/40">
                   {lang === "jp" ? BASE_LABELS[item.base].jp : BASE_LABELS[item.base].en}
-                </span>
-                <span className="rounded-full px-2.5 py-1 text-xs border border-white/20 bg-white/10 text-white/80">
+                  {" · "}
                   {lang === "jp" ? SWEETNESS_LABELS[item.sweetness].jp : SWEETNESS_LABELS[item.sweetness].en}
-                </span>
+                </p>
               </div>
 
               {/* Flavor tags */}
