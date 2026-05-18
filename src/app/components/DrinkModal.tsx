@@ -168,7 +168,7 @@ export default function DrinkModal({
               {/* Vibes */}
               <div className="mb-6">
                 <p className="text-xs text-white/40 mb-2">
-                  {lang === "jp" ? "おすすめの場面" : "Best for"}
+                  {lang === "jp" ? "おすすめの場面" : "Best For"}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {item.vibes.map((vibe) => {
