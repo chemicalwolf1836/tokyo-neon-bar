@@ -6,7 +6,7 @@ import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
@@ -344,6 +344,11 @@ export default function Page() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [theme, setTheme] = useState<Theme>("dark");
   const [themeOpen, setThemeOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatSending, setChatSending] = useState(false);
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -387,6 +392,12 @@ export default function Page() {
   }, [lang]);
 
   useEffect(() => {
+    if (chatOpen && chatBottomRef.current) {
+      chatBottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages, chatOpen]);
+
+  useEffect(() => {
     if (!themeOpen) return;
     const close = (e: MouseEvent) => {
       if (!(e.target as Element).closest("[data-theme-picker]")) setThemeOpen(false);
@@ -395,7 +406,32 @@ export default function Page() {
     return () => document.removeEventListener("mousedown", close);
   }, [themeOpen]);
 
-async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
+async function sendChatMessage() {
+    if (!chatInput.trim() || chatSending) return;
+    const userMsg = { role: "user" as const, content: chatInput.trim() };
+    const updated = [...chatMessages, userMsg];
+    setChatMessages(updated);
+    setChatInput("");
+    setChatSending(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updated }),
+      });
+      const data = await res.json();
+      setChatMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
+    } catch {
+      setChatMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Something went wrong. Please try again." },
+      ]);
+    } finally {
+      setChatSending(false);
+    }
+  }
+
+  async function handleReserveSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
   setFieldErrors({});
   setReserveStatus("loading");
@@ -1119,13 +1155,117 @@ if (Object.keys(nextErrors).length > 0) {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-6 right-6 z-50 neon-ring rounded-full p-3 bg-black/60 backdrop-blur-sm text-white/70 hover:text-white transition"
+            className="fixed bottom-[5.5rem] right-6 z-50 neon-ring rounded-full p-3 bg-black/60 backdrop-blur-sm text-white/70 hover:text-white transition"
             aria-label="Scroll to top"
           >
             <ArrowUp className="h-4 w-4" />
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Chat widget */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <AnimatePresence>
+          {chatOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 12, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="mb-3 w-80 glow-border rounded-2xl bg-black/90 backdrop-blur-md border border-white/10 shadow-2xl flex flex-col overflow-hidden"
+              style={{ height: 420 }}
+            >
+              <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-cyan-500/8 via-violet-500/5 to-transparent">
+                <div className="flex items-center gap-3">
+                  <div className="relative shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400/25 to-violet-500/25 border border-cyan-400/30 flex items-center justify-center text-base select-none">
+                      花
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-cyan-400 border border-black animate-pulse" />
+                  </div>
+                  <div>
+                    <p className="neon-text text-sm font-bold tracking-[0.15em]" style={{ fontFamily: "var(--font-mono)" }}>
+                      HANA
+                    </p>
+                    <p className="text-white/35 text-[10px] tracking-widest uppercase">Neon Kissa · Online</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setChatOpen(false)}
+                  className="text-white/35 hover:text-white transition text-xl leading-none"
+                  aria-label="Close chat"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {chatMessages.length === 0 && (
+                  <p className="text-white/30 text-xs text-center pt-8">
+                    {lang === "jp"
+                      ? "メニュー・営業時間など、なんでもどうぞ。"
+                      : "Ask about our menu, hours, or anything else."}
+                  </p>
+                )}
+                {chatMessages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[78%] px-3 py-2 rounded-xl text-sm leading-relaxed ${
+                        m.role === "user"
+                          ? "bg-cyan-500/20 border border-cyan-400/20 text-white rounded-br-none"
+                          : "bg-white/5 border border-white/10 text-white/85 rounded-bl-none"
+                      }`}
+                    >
+                      {m.content}
+                    </div>
+                  </div>
+                ))}
+                {chatSending && (
+                  <div className="flex justify-start">
+                    <div className="bg-white/5 border border-white/10 text-white/40 px-3 py-2 rounded-xl rounded-bl-none text-sm">
+                      …
+                    </div>
+                  </div>
+                )}
+                <div ref={chatBottomRef} />
+              </div>
+
+              <div className="border-t border-white/10 p-3 flex gap-2 flex-shrink-0">
+                <input
+                  className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-white text-sm placeholder:text-white/30 outline-none focus:border-cyan-400/40 transition"
+                  placeholder={lang === "jp" ? "Hanaに聞く…" : "Ask Hana…"}
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
+                />
+                <button
+                  onClick={sendChatMessage}
+                  disabled={chatSending || !chatInput.trim()}
+                  className="w-8 h-8 neon-ring rounded-full flex items-center justify-center flex-shrink-0 transition disabled:opacity-30"
+                  aria-label="Send"
+                >
+                  <ArrowRight className="w-3.5 h-3.5 text-white" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <button
+          onClick={() => setChatOpen((o) => !o)}
+          className="neon-ring rounded-full bg-black/70 backdrop-blur-sm border border-white/15 shadow-lg flex items-center justify-center transition hover:border-white/30"
+          style={{ width: 52, height: 52 }}
+          aria-label="Toggle chat"
+        >
+          {chatOpen ? (
+            <X className="w-4 h-4 text-white/80" />
+          ) : (
+            <svg className="w-5 h-5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          )}
+        </button>
+      </div>
 
       <DrinkModal
         item={selectedDrink?.item ?? null}

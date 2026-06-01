@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlassWater, Flower2, Moon, Coffee, type LucideIcon } from "lucide-react";
 import { MENU_ITEMS } from "@/app/data/menu";
@@ -120,9 +120,36 @@ export default function CocktailFinderMini({
   const [sweetness, setSweetness] = useState<Sweetness>("any");
   const [likesText, setLikesText] = useState("");
   const [avoidText, setAvoidText] = useState("");
+  const [aiRec, setAiRec] = useState<{ cocktail: string; reason: string } | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const likes = useMemo(() => tokenize(likesText), [likesText]);
   const avoid = useMemo(() => tokenize(avoidText), [avoidText]);
+
+  const askClaude = useCallback(async () => {
+    if (aiLoading) return;
+    setAiLoading(true);
+    setAiRec(null);
+    const parts = [
+      `mood: ${mood}`,
+      sweetness !== "any" ? `sweetness: ${sweetness}` : null,
+      likesText.trim() ? `likes: ${likesText.trim()}` : null,
+      avoidText.trim() ? `avoid: ${avoidText.trim()}` : null,
+    ].filter(Boolean).join(", ");
+    try {
+      const res = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: parts }),
+      });
+      const data = await res.json();
+      if (data.cocktail) setAiRec(data);
+    } catch {
+      // silently ignore
+    } finally {
+      setAiLoading(false);
+    }
+  }, [aiLoading, mood, sweetness, likesText, avoidText]);
 
   const best = useMemo(() => {
     const scored = MENU_ITEMS.map((item) => ({
@@ -266,6 +293,40 @@ export default function CocktailFinderMini({
       <div className="mt-2 text-[11px] text-white/40">
         {t.tip}
       </div>
+
+      <div className="mt-3 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={askClaude}
+          disabled={aiLoading}
+          className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs border border-cyan-400/25 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {aiLoading ? (
+            <>
+              <span className="inline-block h-3 w-3 animate-spin rounded-full border border-white/30 border-t-white/80" />
+              {lang === "jp" ? "考え中…" : "Asking Claude…"}
+            </>
+          ) : (
+            <>✦ {lang === "jp" ? "AIおすすめ" : "Ask Claude AI"}</>
+          )}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {aiRec && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.25 }}
+            className="mt-3 rounded-xl border border-cyan-400/20 bg-cyan-500/8 p-3"
+          >
+            <p className="text-[11px] text-cyan-300/60 mb-1 font-mono">✦ {lang === "jp" ? "Claudeのおすすめ" : "Claude's pick"}</p>
+            <p className="font-semibold text-white text-sm">{aiRec.cocktail}</p>
+            <p className="text-xs text-white/55 mt-0.5">{aiRec.reason}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
