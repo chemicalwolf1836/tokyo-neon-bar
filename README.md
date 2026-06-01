@@ -2,7 +2,7 @@
 
 A bilingual cocktail bar concept website designed for Tokyo nightlife venues serving both local customers and international visitors.
 
-This project demonstrates **full-stack web development**, combining a modern UI with a working reservation system and a cocktail recommendation feature.
+This project demonstrates **full-stack web development**, combining a modern UI with a working reservation system, cocktail recommendation feature, and an AI-powered virtual host chat.
 
 ---
 
@@ -36,6 +36,14 @@ https://tokyo-neon-bar.vercel.app
 - Responsive layout for desktop and mobile
 - Google Maps access section
 
+### AI Virtual Host — Hana
+- Floating chat button available on every page
+- Powered by **Claude (claude-sonnet-4-6)** via the Anthropic API
+- Responds in whichever language the guest uses (English or Japanese)
+- Knows the bar's opening hours, cocktail menu, and pricing
+- Warm, atmospheric tone kept to 1–2 sentences per reply
+- Conversation history maintained within the session (up to 20 messages)
+
 ### Cocktail Finder
 - Interactive drink recommendation system
 - Filters based on mood and sweetness
@@ -51,8 +59,9 @@ https://tokyo-neon-bar.vercel.app
 
 ## Backend Features
 
-- API route for reservation handling
-- Email delivery via **Resend**
+- `/api/chat` — AI chat route using the Anthropic SDK; Hana's persona and bar knowledge are set in a system prompt
+- `/api/recommend` — cocktail recommendation logic
+- `/api/reserve` — reservation handling with email delivery via **Resend**
 - Environment variables for secure API keys
 - Serverless deployment on **Vercel**
 
@@ -79,6 +88,7 @@ The reservation system includes basic protections:
 
 ### Backend
 - Next.js API Routes
+- Anthropic Claude API (AI chat)
 - Resend Email API
 
 ### Infrastructure
@@ -88,6 +98,12 @@ The reservation system includes basic protections:
 ---
 
 ## Challenges
+
+### Building an AI Virtual Host
+Designing Hana required crafting a system prompt that keeps responses brief and atmospheric while still being genuinely useful — answering questions about hours, the menu, and reservations without sounding like a chatbot.
+
+### Bilingual AI Responses
+The chat automatically detects and matches the language of the guest (English or Japanese), which required prompt engineering to ensure consistent behaviour across both languages.
 
 ### Building a Recommendation System
 The Cocktail Finder required designing a scoring system that evaluates user preferences such as mood, sweetness, and flavor keywords.
@@ -102,8 +118,11 @@ Creating a working reservation system required connecting a frontend form with a
 
 ## What I Learned
 
-Through this project I practiced:
+Through this project I practised:
 
+- Integrating the Anthropic Claude API into a Next.js app
+- Writing effective system prompts for persona-driven AI behaviour
+- Designing bilingual AI responses through prompt engineering
 - Designing realistic UI for hospitality businesses
 - Implementing server-side API routes
 - Handling environment variables in production
@@ -114,7 +133,7 @@ Through this project I practiced:
 
 ## Project Purpose
 
-This project was built as a **portfolio demonstration of full-stack web development** using modern JavaScript tools.
+This project was built as a **portfolio demonstration of full-stack web development** using modern JavaScript tools, with a focus on AI integration for hospitality use cases.
 
 The concept focuses on nightlife venues in Tokyo that want to serve both local and international customers.
 
