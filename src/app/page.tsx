@@ -4,6 +4,7 @@ import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
 import CountUp from "@/app/components/CountUp";
 import GlowButton from "@/app/components/GlowButton";
+import OpenStatus from "@/app/components/OpenStatus";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
@@ -494,11 +495,14 @@ if (Object.keys(nextErrors).length > 0) {
 
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/30">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
-          <div className="neon-sign flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-white/80" />
-            <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
-              {t.brand}
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="neon-sign flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-white/80" />
+              <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
+                {t.brand}
+              </span>
+            </div>
+            <OpenStatus lang={lang} className="hidden md:inline-flex" />
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -1061,6 +1065,9 @@ if (Object.keys(nextErrors).length > 0) {
               <div>
                 <p className="text-sm text-white/85">{lang === "jp" ? "営業時間" : "Hours"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.hours}</p>
+                <div className="mt-1.5">
+                  <OpenStatus lang={lang} />
+                </div>
               </div>
             </div>
 
