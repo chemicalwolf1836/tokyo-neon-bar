@@ -2,7 +2,6 @@
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
-import ScrollProgress from "@/app/components/ScrollProgress";
 import CountUp from "@/app/components/CountUp";
 import GlowButton from "@/app/components/GlowButton";
 import { MENU_ITEMS } from "@/app/data/menu";
@@ -491,7 +490,6 @@ if (Object.keys(nextErrors).length > 0) {
 
   return (
     <main className="min-h-screen">
-      <ScrollProgress />
       <div className="pointer-events-none fixed inset-0 grid-scan" />
 
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/30">
