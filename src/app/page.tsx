@@ -3,7 +3,6 @@ import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
 import ScrollProgress from "@/app/components/ScrollProgress";
-import Marquee from "@/app/components/Marquee";
 import CountUp from "@/app/components/CountUp";
 import TiltCard from "@/app/components/TiltCard";
 import GlowButton from "@/app/components/GlowButton";
@@ -736,8 +735,6 @@ if (Object.keys(nextErrors).length > 0) {
     </div>
   </div>
 </section>
-
-      <Marquee lang={lang} />
 
       <Section id="menu" title={t.menu.title} subtitle={t.menu.subtitle}>
         {(() => {

@@ -156,12 +156,6 @@ body::after {
   40%, 100% { opacity: 1; }
 }
 
-/* ── Marquee ticker ── */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
 /* ── Aurora drift — the ambient glow slowly breathes ── */
 @keyframes auroraDrift {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
