@@ -2,6 +2,11 @@
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
+import ScrollProgress from "@/app/components/ScrollProgress";
+import Marquee from "@/app/components/Marquee";
+import CountUp from "@/app/components/CountUp";
+import TiltCard from "@/app/components/TiltCard";
+import GlowButton from "@/app/components/GlowButton";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
 import type { LucideIcon } from "lucide-react";
@@ -488,6 +493,7 @@ if (Object.keys(nextErrors).length > 0) {
 
   return (
     <main className="min-h-screen">
+      <ScrollProgress />
       <div className="pointer-events-none fixed inset-0 grid-scan" />
 
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/30">
@@ -614,7 +620,7 @@ if (Object.keys(nextErrors).length > 0) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.05 }}
-              className="neon-text mt-3 text-3xl md:text-5xl font-semibold tracking-tight"
+              className="hero-ignite neon-text mt-3 text-3xl md:text-5xl font-semibold tracking-tight"
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {t.hero.title}
@@ -641,12 +647,12 @@ if (Object.keys(nextErrors).length > 0) {
               transition={{ duration: 0.55, delay: 0.14 }}
               className="mt-6 flex flex-col sm:flex-row gap-3"
             >
-              <a
+              <GlowButton
                 href="#reserve"
-                className="neon-ring rounded-2xl px-5 py-3 text-sm font-medium bg-cyan-500/10 border border-cyan-400/25 hover:bg-cyan-500/20 text-cyan-100 transition inline-flex items-center justify-center gap-2"
+                className="neon-ring rounded-2xl px-5 py-3 text-sm font-medium bg-cyan-500/10 border border-cyan-400/25 hover:bg-cyan-500/20 text-cyan-100 transition inline-flex items-center justify-center"
               >
                 {t.hero.ctaPrimary} <ArrowRight className="h-4 w-4" />
-              </a>
+              </GlowButton>
               <a
                 href="#menu"
                 className="rounded-2xl px-5 py-3 text-sm font-medium border border-white/15 hover:border-white/25 transition inline-flex items-center justify-center"
@@ -693,8 +699,16 @@ if (Object.keys(nextErrors).length > 0) {
       >
         <div className="text-yellow-400 text-xl">★★★★★</div>
         <div>
-          <div className="font-semibold text-white">{t.trust.rating}</div>
-          <div className="text-xs text-white/60">{t.trust.reviews}</div>
+          <div className="font-semibold text-white">
+            <CountUp value={4.9} decimals={1} suffix=" / 5" />
+          </div>
+          <div className="text-xs text-white/60">
+            {lang === "jp" ? (
+              <CountUp value={120} prefix="レビュー " suffix="件以上" />
+            ) : (
+              <CountUp value={120} suffix="+ reviews" />
+            )}
+          </div>
         </div>
       </motion.div>
 
@@ -723,6 +737,8 @@ if (Object.keys(nextErrors).length > 0) {
   </div>
 </section>
 
+      <Marquee lang={lang} />
+
       <Section id="menu" title={t.menu.title} subtitle={t.menu.subtitle}>
         {(() => {
           const menuIcons = [GlassWater, Flower2, Moon, Coffee];
@@ -737,23 +753,26 @@ if (Object.keys(nextErrors).length > 0) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
-              onClick={() => setSelectedDrink({ item: MENU_ITEMS[i], icon: Icon })}
-              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 rounded-lg p-1.5 bg-white/5 text-white/40">
-                    <Icon className="h-4 w-4" />
+              <TiltCard
+                onClick={() => setSelectedDrink({ item: MENU_ITEMS[i], icon: Icon })}
+                className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring cursor-pointer h-full"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 rounded-lg p-1.5 bg-white/5 text-white/40">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{it.name}</p>
+                      <p className="mt-1 text-sm text-[rgb(var(--muted))]">
+                        {it.desc}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">{it.name}</p>
-                    <p className="mt-1 text-sm text-[rgb(var(--muted))]">
-                      {it.desc}
-                    </p>
-                  </div>
+                  <p className="text-sm font-medium neon-price shrink-0">{it.price}</p>
                 </div>
-                <p className="text-sm font-medium neon-price shrink-0">{it.price}</p>
-              </div>
+              </TiltCard>
             </motion.div>
             );
           })}
@@ -946,14 +965,14 @@ if (Object.keys(nextErrors).length > 0) {
                       />
                     </label>
 
-                    <button
+                    <GlowButton
                       type="submit"
                       disabled={reserveStatus === "loading"}
-                      className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
+                      className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"
                     >
                       {reserveStatus === "loading" && <Spinner />}
                       {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
-                    </button>
+                    </GlowButton>
                   </fieldset>
 
                   {reserveStatus === "idle" && (
