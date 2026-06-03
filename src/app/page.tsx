@@ -4,7 +4,6 @@ import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
 import ScrollProgress from "@/app/components/ScrollProgress";
 import CountUp from "@/app/components/CountUp";
-import TiltCard from "@/app/components/TiltCard";
 import GlowButton from "@/app/components/GlowButton";
 import { MENU_ITEMS } from "@/app/data/menu";
 import type { MenuItem } from "@/app/data/menu";
@@ -750,26 +749,23 @@ if (Object.keys(nextErrors).length > 0) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
+              onClick={() => setSelectedDrink({ item: MENU_ITEMS[i], icon: Icon })}
+              className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring transition-transform duration-300 hover:scale-[1.01] cursor-pointer"
             >
-              <TiltCard
-                onClick={() => setSelectedDrink({ item: MENU_ITEMS[i], icon: Icon })}
-                className="glow-border rounded-2xl p-5 bg-white/5 hover:bg-white/7 transition neon-ring cursor-pointer h-full"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 rounded-lg p-1.5 bg-white/5 text-white/40">
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{it.name}</p>
-                      <p className="mt-1 text-sm text-[rgb(var(--muted))]">
-                        {it.desc}
-                      </p>
-                    </div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 rounded-lg p-1.5 bg-white/5 text-white/40">
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <p className="text-sm font-medium neon-price shrink-0">{it.price}</p>
+                  <div>
+                    <p className="font-medium">{it.name}</p>
+                    <p className="mt-1 text-sm text-[rgb(var(--muted))]">
+                      {it.desc}
+                    </p>
+                  </div>
                 </div>
-              </TiltCard>
+                <p className="text-sm font-medium neon-price shrink-0">{it.price}</p>
+              </div>
             </motion.div>
             );
           })}
