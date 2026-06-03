@@ -614,7 +614,7 @@ if (Object.keys(nextErrors).length > 0) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.05 }}
-              className="neon-text mt-3 text-4xl md:text-6xl font-bold tracking-tight"
+              className="neon-text mt-3 text-3xl md:text-5xl font-semibold tracking-tight"
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {t.hero.title}
