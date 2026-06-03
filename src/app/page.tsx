@@ -251,7 +251,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24 py-14 md:py-18">
+    <section id={id} className="scroll-mt-24 py-16 md:py-24">
       <div className="mx-auto w-full max-w-6xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -597,7 +597,7 @@ if (Object.keys(nextErrors).length > 0) {
         </AnimatePresence>
       </header>
 
-      <section className="relative pt-14 md:pt-20 pb-10">
+      <section className="relative pt-16 md:pt-28 pb-14">
         <div className="mx-auto w-full max-w-6xl px-4">
           <div className="glow-border neon-ring rounded-3xl p-6 md:p-10 bg-[rgba(16,16,22,0.55)]">
             <motion.p
@@ -614,7 +614,7 @@ if (Object.keys(nextErrors).length > 0) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.05 }}
-              className="neon-text mt-3 text-3xl md:text-5xl font-semibold tracking-tight"
+              className="neon-text mt-3 text-4xl md:text-6xl font-bold tracking-tight"
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {t.hero.title}
