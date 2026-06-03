@@ -495,14 +495,11 @@ if (Object.keys(nextErrors).length > 0) {
 
       <header className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/30">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="neon-sign flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-white/80" />
-              <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
-                {t.brand}
-              </span>
-            </div>
-            <OpenStatus lang={lang} className="hidden md:inline-flex" />
+          <div className="neon-sign flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-white/80" />
+            <span className="neon-text font-semibold tracking-wide" style={{ fontFamily: "var(--font-mono)" }}>
+              {t.brand}
+            </span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -661,7 +658,8 @@ if (Object.keys(nextErrors).length > 0) {
               </a>
             </motion.div>
 
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <OpenStatus lang={lang} />
               {t.hero.badges.map((b, i) => (
                 <span
                   key={b}
