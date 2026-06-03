@@ -1063,9 +1063,6 @@ if (Object.keys(nextErrors).length > 0) {
               <div>
                 <p className="text-sm text-white/85">{lang === "jp" ? "営業時間" : "Hours"}</p>
                 <p className="text-sm text-[rgb(var(--muted))]">{t.access.hours}</p>
-                <div className="mt-1.5">
-                  <OpenStatus lang={lang} />
-                </div>
               </div>
             </div>
 
