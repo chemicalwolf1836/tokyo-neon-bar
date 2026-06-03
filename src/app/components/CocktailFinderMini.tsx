@@ -321,7 +321,17 @@ export default function CocktailFinderMini({
             transition={{ duration: 0.25 }}
             className="mt-3 rounded-xl border border-cyan-400/20 bg-cyan-500/8 p-3"
           >
-            <p className="text-[11px] text-cyan-300/60 mb-1 font-mono">✦ {lang === "jp" ? "Claudeのおすすめ" : "Claude's pick"}</p>
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-[11px] text-cyan-300/60 font-mono">✦ {lang === "jp" ? "Claudeのおすすめ" : "Claude's pick"}</p>
+              <button
+                type="button"
+                onClick={() => setAiRec(null)}
+                className="text-white/30 hover:text-white/70 transition text-xs leading-none"
+                aria-label="Clear recommendation"
+              >
+                ✕
+              </button>
+            </div>
             <p className="font-semibold text-white text-sm">{aiRec.cocktail}</p>
             <p className="text-xs text-white/55 mt-0.5">{aiRec.reason}</p>
           </motion.div>
