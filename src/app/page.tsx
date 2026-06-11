@@ -1,5 +1,6 @@
 "use client";
 import CocktailFinderMini from "@/app/components/CocktailFinderMini";
+import TonightsPick from "@/app/components/TonightsPick";
 import DrinkModal from "@/app/components/DrinkModal";
 import GalleryLightbox from "@/app/components/GalleryLightbox";
 import CountUp from "@/app/components/CountUp";
@@ -75,6 +76,20 @@ finder: {
     avoid: "Avoid (optional)",
     tip: 'Tip: try "yuzu", "coffee", "plum", "sparkling".'
    },
+
+    tonight: {
+      badge: "Tonight's Pick",
+      note: "A new pick every night, chosen by the house.",
+      cta: "View details",
+    },
+
+    chat: {
+      starters: [
+        "What are your opening hours?",
+        "Which cocktail do you recommend?",
+        "Can I book a table for tonight?",
+      ],
+    },
 
     reserve: {
       title: "Reservations",
@@ -177,6 +192,20 @@ finder: {
   avoid: "避けたい味（任意）",
   tip: "ヒント：「ゆず」「コーヒー」「梅」「スパークリング」など"
 },
+
+    tonight: {
+      badge: "本日の一杯",
+      note: "毎晩入れ替わる、お店のおすすめです。",
+      cta: "詳細を見る",
+    },
+
+    chat: {
+      starters: [
+        "営業時間を教えてください",
+        "おすすめのカクテルは？",
+        "今夜予約できますか？",
+      ],
+    },
     reserve: {
       title: "予約",
       subtitle:
@@ -321,6 +350,10 @@ const GALLERY = [
   { src: "/images/gallery-2.jpg", alt: "Tokyo neon architecture" },
 ];
 
+// One icon per menu item, in MENU_ITEMS order — shared by the menu grid,
+// the drink modal, and Tonight's Pick.
+const MENU_ICONS = [GlassWater, Flower2, Moon, Coffee];
+
 function validateField(name: string, value: string, lang: Lang): string {
   const today = new Date().toISOString().split("T")[0];
   switch (name) {
@@ -409,9 +442,10 @@ export default function Page() {
     return () => document.removeEventListener("mousedown", close);
   }, [themeOpen]);
 
-async function sendChatMessage() {
-    if (!chatInput.trim() || chatSending) return;
-    const userMsg = { role: "user" as const, content: chatInput.trim() };
+async function sendChatMessage(text?: string) {
+    const content = (text ?? chatInput).trim();
+    if (!content || chatSending) return;
+    const userMsg = { role: "user" as const, content };
     const updated = [...chatMessages, userMsg];
     setChatMessages(updated);
     setChatInput("");
@@ -427,7 +461,13 @@ async function sendChatMessage() {
     } catch {
       setChatMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Something went wrong. Please try again." },
+        {
+          role: "assistant",
+          content:
+            lang === "jp"
+              ? "エラーが発生しました。もう一度お試しください。"
+              : "Something went wrong. Please try again.",
+        },
       ]);
     } finally {
       setChatSending(false);
@@ -462,7 +502,11 @@ async function sendChatMessage() {
 if (Object.keys(nextErrors).length > 0) {
   setFieldErrors(nextErrors);
   setReserveStatus("error");
-  setReserveError("Please fix the highlighted fields.");
+  setReserveError(
+    lang === "jp"
+      ? "入力内容をご確認ください。"
+      : "Please fix the highlighted fields."
+  );
   return;
 }
 
@@ -736,12 +780,15 @@ if (Object.keys(nextErrors).length > 0) {
 </section>
 
       <Section id="menu" title={t.menu.title} subtitle={t.menu.subtitle}>
-        {(() => {
-          const menuIcons = [GlassWater, Flower2, Moon, Coffee];
-          return (
+        <TonightsPick
+          lang={lang}
+          t={t.tonight}
+          onSelect={(i) => setSelectedDrink({ item: MENU_ITEMS[i], icon: MENU_ICONS[i] })}
+        />
+
         <div className="grid md:grid-cols-2 gap-4">
           {t.menu.items.map((it, i) => {
-            const Icon = menuIcons[i];
+            const Icon = MENU_ICONS[i];
             return (
             <motion.div
               key={it.name}
@@ -770,12 +817,10 @@ if (Object.keys(nextErrors).length > 0) {
             );
           })}
         </div>
-          );
-        })()}
 
        {/* Cocktail Finder */}
 <div className="mt-8 flex justify-center">
-  <div className="max-auto w-full max-w-3xl">
+  <div className="mx-auto w-full max-w-3xl">
     <CocktailFinderMini t={t} lang={lang} />
 
 
@@ -964,7 +1009,9 @@ if (Object.keys(nextErrors).length > 0) {
                       className="neon-ring rounded-full px-5 py-2 text-sm text-white/90 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center"
                     >
                       {reserveStatus === "loading" && <Spinner />}
-                      {reserveStatus === "loading" ? "Sending..." : "Request Reservation"}
+                      {reserveStatus === "loading"
+                        ? lang === "jp" ? "送信中…" : "Sending…"
+                        : t.reserve.button}
                     </GlowButton>
                   </fieldset>
 
@@ -1213,11 +1260,24 @@ if (Object.keys(nextErrors).length > 0) {
 
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {chatMessages.length === 0 && (
-                  <p className="text-white/30 text-xs text-center pt-8">
-                    {lang === "jp"
-                      ? "メニュー・営業時間など、なんでもどうぞ。"
-                      : "Ask about our menu, hours, or anything else."}
-                  </p>
+                  <div className="pt-6">
+                    <p className="text-white/30 text-xs text-center">
+                      {lang === "jp"
+                        ? "メニュー・営業時間など、なんでもどうぞ。"
+                        : "Ask about our menu, hours, or anything else."}
+                    </p>
+                    <div className="mt-4 flex flex-col items-stretch gap-2">
+                      {t.chat.starters.map((q) => (
+                        <button
+                          key={q}
+                          onClick={() => sendChatMessage(q)}
+                          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left text-xs text-white/70 transition hover:border-cyan-400/30 hover:bg-cyan-500/10 hover:text-cyan-100"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
                 {chatMessages.map((m, i) => (
                   <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -1244,6 +1304,7 @@ if (Object.keys(nextErrors).length > 0) {
 
               <div className="border-t border-white/10 p-3 flex gap-2 flex-shrink-0">
                 <input
+                  autoFocus
                   className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-white text-sm placeholder:text-white/30 outline-none focus:border-cyan-400/40 transition"
                   placeholder={lang === "jp" ? "Hanaに聞く…" : "Ask Hana…"}
                   value={chatInput}
@@ -1251,7 +1312,7 @@ if (Object.keys(nextErrors).length > 0) {
                   onKeyDown={(e) => e.key === "Enter" && sendChatMessage()}
                 />
                 <button
-                  onClick={sendChatMessage}
+                  onClick={() => sendChatMessage()}
                   disabled={chatSending || !chatInput.trim()}
                   className="w-8 h-8 neon-ring rounded-full flex items-center justify-center flex-shrink-0 transition disabled:opacity-30"
                   aria-label="Send"
